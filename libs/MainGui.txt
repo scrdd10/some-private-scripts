@@ -1,5 +1,5 @@
 local CategoriesModule=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/CategoriesModules.txt"))()
-local funcs=require(script.Parent.GuiLoader)
+local funcs=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/GuiLoader.txt"))()
 local ContextActionService=game:GetService("ContextActionService")
 
 ContextActionService:UnbindAction("RbxCameraKeypress")
