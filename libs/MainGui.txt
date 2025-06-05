@@ -1,4 +1,4 @@
-local CategoriesModule=require(script.CategoriesModule)
+local CategoriesModule=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/CategoriesModules.txt"))()
 local funcs=require(script.Parent.GuiLoader)
 local ContextActionService=game:GetService("ContextActionService")
 
