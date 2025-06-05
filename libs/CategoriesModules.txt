@@ -2,7 +2,7 @@ local TweenService=game:GetService("TweenService")
 local CollectionService=game:GetService("CollectionService")
 local regedit
 
-local ExploitModule=game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/ExploitModule.txt")()
+local ExploitModule=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/ExploitModule.txt"))()
 
 local module={}
 module.__index=module
