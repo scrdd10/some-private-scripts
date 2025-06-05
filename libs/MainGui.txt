@@ -1,0 +1,48 @@
+local CategoriesModule=require(script.CategoriesModule)
+local funcs=require(script.Parent.GuiLoader)
+local ContextActionService=game:GetService("ContextActionService")
+
+ContextActionService:UnbindAction("RbxCameraKeypress")
+
+local module={}
+module.__index=module
+
+function module.new()
+	local self=setmetatable({},module)
+	
+	self.currentCat=nil
+	
+	self.categories={}
+	self.gui=funcs.createStartGui()
+	
+	self.gui:AddTag("MAIN_GUI_CHEAT")
+	
+	return self
+end
+
+function module:swap_to_category(category_name: string)
+	if not self.currentCat then
+		self.categories[category_name]:Show()
+		
+		self.currentCat=category_name
+	else
+		self.categories[self.currentCat]:Hide()
+		self.categories[category_name]:Show()
+		
+		self.currentCat=category_name
+	end
+end
+
+function module:add_category(name: string)
+	local category=CategoriesModule.new(name)
+	
+	self.categories[name]=category
+	
+	category.button.MouseButton1Click:Connect(function()
+		self:swap_to_category(category.name)
+	end)
+	
+	return category
+end
+
+return module
