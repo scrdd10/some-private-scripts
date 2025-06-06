@@ -39,11 +39,12 @@ local Camera:Camera?=workspace.CurrentCamera
 function Aimbot_enable(setting,storage)
 	local dot_to_count:Vector2=Vector2.new(Camera.ViewportSize.X/2,Camera.ViewportSize.Y/2)
 	local fov:number=setting.fov.value
-	print(storage)
-	storage.locked=false
 	
 	RunService:BindToRenderStep("Aimbot_thread",Enum.RenderPriority.First.Value,function()
-		if storage.locked then return end
+		local aim=storage.locked_person
+		if storage.locked_person then
+			Camera.CFrame=CFrame.new(Camera.CFrame.Position,aim.Position)
+		end
 		
 		local possible_targets={}
 		
@@ -83,14 +84,13 @@ function Aimbot_enable(setting,storage)
 			selected_part=selected_char.PrimaryPart
 		end
 		
-		Camera.CFrame=CFrame.new(Camera.CFrame.Position,selected_part.Position)
-		storage.locked=true
+		storage.locked_person=selected_part
 	end)
 end
 
 function Aimbot_disable(setting,storage)
 	RunService:UnbindFromRenderStep("Aimbot_thread")
-	storage.locked=false
+	storage.locked_person=nil
 end
 
 
