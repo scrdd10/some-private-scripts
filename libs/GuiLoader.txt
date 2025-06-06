@@ -602,7 +602,7 @@ function module.createStartGui(name: string?)
 	G2L["38"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
 
 	-- StarterGui.ESP
-	G2L["39"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+	G2L["39"] = Instance.new("ScreenGui", gethui());
 	G2L["39"]["Name"] = [[ESP]];
 	G2L["39"]["DisplayOrder"]=99
 	G2L["39"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
