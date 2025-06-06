@@ -136,8 +136,11 @@ function ESP_enable(setting,storage)
 				continue
 			end
 			
-			local esp:Frame=draw_esp_box()
-			players_with_esp[Player]=esp
+			local esp=players_with_esp[Player]
+			if esp then
+				esp=draw_esp_box()
+				players_with_esp[Player]=esp
+			end
 			
 			esp.Position=UDim2.new(0,pos.X,0,pos.Y)
 			esp.UIScale.Scale=20/(Camera.CFrame.Position-PrimaryPart.Position).Magnitude
