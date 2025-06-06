@@ -41,6 +41,8 @@ function Aimbot_enable(setting,storage)
 	local fov:number=setting.fov.value
 	
 	RunService:BindToRenderStep("Aimbot_thread",Enum.RenderPriority.First.Value,function()
+		if storage.locked then return end
+		
 		local possible_targets={}
 		
 		for _,Player:Player in Players:GetPlayers() do
@@ -80,11 +82,13 @@ function Aimbot_enable(setting,storage)
 		end
 		
 		Camera.CFrame=CFrame.new(Camera.CFrame.Position,selected_part.Position)
+		storage.locked=true
 	end)
 end
 
 function Aimbot_disable(setting,storage)
 	RunService:UnbindFromRenderStep("Aimbot_thread")
+	storage.locked=false
 end
 
 
