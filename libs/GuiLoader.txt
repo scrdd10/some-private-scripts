@@ -600,6 +600,11 @@ function module.createStartGui(name: string?)
 	G2L["38"] = Instance.new("UIListLayout", G2L["2e"]);
 	G2L["38"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
 	G2L["38"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+	-- StarterGui.ESP
+	G2L["39"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+	G2L["39"]["Name"] = [[ESP]];
+	G2L["39"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 	
 	return G2L["1"]
 end
