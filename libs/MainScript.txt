@@ -41,7 +41,7 @@ local regedit
 local function draw_esp_box(): Frame
 	local G2L={}
 
-	-- StarterGui.ESP.Frame
+	-- StarterGui.ScreenGui.Frame
 	G2L["2"] = Instance.new("Frame", esp_gui);
 	G2L["2"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
 	G2L["2"]["BorderSizePixel"] = 0;
@@ -55,8 +55,6 @@ local function draw_esp_box(): Frame
 
 	-- StarterGui.ScreenGui.Frame.UIScale
 	G2L["3"] = Instance.new("UIScale", G2L["2"]);
-
-
 
 	-- StarterGui.ScreenGui.Frame.UIStroke
 	G2L["4"] = Instance.new("UIStroke", G2L["2"]);
@@ -84,23 +82,32 @@ local function draw_esp_box(): Frame
 	G2L["5"]["Position"] = UDim2.new(0.5, 0, 1.1, 0);
 
 
+	-- StarterGui.ScreenGui.Frame.name.UIScale
+	G2L["6"] = Instance.new("UIScale", G2L["5"]);
+
+
+
 	-- StarterGui.ScreenGui.Frame.distance
-	G2L["6"] = Instance.new("TextLabel", G2L["2"]);
-	G2L["6"]["TextWrapped"] = true;
-	G2L["6"]["TextStrokeTransparency"] = 0;
-	G2L["6"]["BorderSizePixel"] = 0;
-	G2L["6"]["TextSize"] = 14;
-	G2L["6"]["TextScaled"] = true;
-	G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
-	G2L["6"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
-	G2L["6"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
-	G2L["6"]["BackgroundTransparency"] = 1;
-	G2L["6"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-	G2L["6"]["Size"] = UDim2.new(1, 0, 0.12, 0);
-	G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-	G2L["6"]["Text"] = [[500]];
-	G2L["6"]["Name"] = [[distance]];
-	G2L["6"]["Position"] = UDim2.new(0.5, 0, -0.1, 0);
+	G2L["7"] = Instance.new("TextLabel", G2L["2"]);
+	G2L["7"]["TextWrapped"] = true;
+	G2L["7"]["TextStrokeTransparency"] = 0;
+	G2L["7"]["BorderSizePixel"] = 0;
+	G2L["7"]["TextSize"] = 14;
+	G2L["7"]["TextScaled"] = true;
+	G2L["7"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["7"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+	G2L["7"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["7"]["BackgroundTransparency"] = 1;
+	G2L["7"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	G2L["7"]["Size"] = UDim2.new(1, 0, 0.12, 0);
+	G2L["7"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["7"]["Text"] = [[500]];
+	G2L["7"]["Name"] = [[distance]];
+	G2L["7"]["Position"] = UDim2.new(0.5, 0, -0.1, 0);
+
+
+	-- StarterGui.ScreenGui.Frame.distance.UIScale
+	G2L["8"] = Instance.new("UIScale", G2L["7"]);
 
 	return G2L["2"]
 end
@@ -180,7 +187,14 @@ function ESP_enable(setting,storage)
 			local PrimaryPart:BasePart=Player.Character.PrimaryPart
 			
 			local Distance:number=(Camera.CFrame.Position-PrimaryPart.Position).Magnitude
-			if Distance>setting.distance.value then continue end
+			if Distance>setting.distance.value then
+				local e=players_with_esp[Player]
+				if players_with_esp[Player] then
+					players_with_esp[Player]=nil
+					e:Destroy()
+				end
+				continue
+			end
 			
 			local pos,onscreen=Camera:WorldToScreenPoint(PrimaryPart.Position)
 			if not onscreen then
@@ -203,9 +217,12 @@ function ESP_enable(setting,storage)
 			esp.UIStroke.Thickness=Distance/20
 			
 			esp.name.Text=setting["show_names"].value and Player.Name or ""
-			esp.distance.Text=setting["show_distance"].value and tostring(Distance) or ""
+			esp.distance.Text=setting["show_distance"].value and tostring(math.floor(Distance)) or ""
 			
-			if #Teams<1 or not setting["team_check"].value then
+			esp.name.UIScale.Scale=Distance/35
+			esp.distance.UIScale.Scale=Distance/35
+			
+			if #Teams:GetChildren()<1 or not setting["team_check"].value then
 				if esp.UIStroke.Color~=Color3.fromRGB(0, 255, 0) then
 					esp.UIStroke.Color=Color3.fromRGB(0, 255, 0)
 				end
