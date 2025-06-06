@@ -18,28 +18,28 @@ function module.new(name: string, decal: string)
 	duplicate_of_button.logo.Image=decal or duplicate_of_button.logo.Image
 	duplicate_of_button.name.Text=name
 	duplicate_of_button.Parent=tab_buttons.buttons
-	
+
 	local duplicate_cat=main.left["cat_example"]:Clone()
 	duplicate_cat.Parent=main.left
-	
+
 	local duplicate_cat2=main.left["cat_example"]:Clone()
 	duplicate_cat2.Parent=main.right
-	
+
 	local self=setmetatable({},module)
-	
+
 	self.button=duplicate_of_button
 	self.name=name
-	
+
 	self.cat_under={duplicate_cat, duplicate_cat2}
 	self.funcs_under={}
-	
+
 	return self
 end
 
 function module:Show()
 	TweenService:Create(self.button,TweenInfo.new(.2,Enum.EasingStyle.Sine),{BackgroundTransparency=.8}):Play()
 	TweenService:Create(self.button.ind,TweenInfo.new(.2,Enum.EasingStyle.Sine),{BackgroundTransparency=0}):Play()
-	
+
 	regedit.outline.outline.outline.main.topbar.category.Text=self.name
 	for _,v in self.cat_under do
 		v.Visible=true
@@ -49,7 +49,7 @@ end
 function module:Hide()
 	TweenService:Create(self.button,TweenInfo.new(.2,Enum.EasingStyle.Sine),{BackgroundTransparency=1}):Play()
 	TweenService:Create(self.button.ind,TweenInfo.new(.2,Enum.EasingStyle.Sine),{BackgroundTransparency=1}):Play()
-	
+
 	for _,v in self.cat_under do
 		v.Visible=false
 	end
@@ -57,17 +57,17 @@ end
 
 function module:add_func(name: string, where: string, callback_enable, callback_disable, sttings: {}, button_type: string)
 	local main=regedit.outline.outline.outline.main
-	
+
 	local selected
 	for _,v in self.cat_under do
 		if v.Parent.Name==where then
 			selected=v
 		end
 	end
-	
+
 	local NewExploit=ExploitModule.new(name,selected,callback_enable,callback_disable, sttings, button_type)
 	table.insert(self.funcs_under,NewExploit)
-	
+
 	return NewExploit
 end
 
