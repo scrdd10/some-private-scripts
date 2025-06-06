@@ -36,11 +36,11 @@ local Camera:Camera?=workspace.CurrentCamera
 	},"switch"
 )]]
 
-function Aimbot_enable(setting,storage)
+function Aimbot_enable(setting,storage1)
 	local dot_to_count:Vector2=Vector2.new(Camera.ViewportSize.X/2,Camera.ViewportSize.Y/2)
 	local fov:number=setting.fov.value
-	print(storage)
-	storage.locked=false
+	print(storage1)
+	storage1.locked=false
 	
 	RunService:BindToRenderStep("Aimbot_thread",Enum.RenderPriority.First.Value,function()
 		if storage.locked then return end
@@ -84,13 +84,13 @@ function Aimbot_enable(setting,storage)
 		end
 		
 		Camera.CFrame=CFrame.new(Camera.CFrame.Position,selected_part.Position)
-		storage.locked=true
+		storage1.locked=true
 	end)
 end
 
-function Aimbot_disable(setting,storage)
+function Aimbot_disable(setting,storage1)
 	RunService:UnbindFromRenderStep("Aimbot_thread")
-	storage.locked=false
+	storage1.locked=false
 end
 
 
