@@ -1,8 +1,9 @@
 local CategoriesModule=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/CategoriesModules.txt"))()
 local funcs=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/GuiLoader.txt"))()
-local ContextActionService=game:GetService("ContextActionService")
 
-ContextActionService:UnbindAction("RbxCameraKeypress")
+local ContextActionService=game:GetService("ContextActionService")
+local UserInputService=game:GetService("UserInputService")
+local TweenService=game:GetService("TweenService")
 
 local module={}
 module.__index=module
@@ -17,7 +18,34 @@ function module.new()
 	
 	self.gui:AddTag("MAIN_GUI_CHEAT")
 	
+	self:SetupConnetions()
+	
+	self.gui.outline.outline.outline.tabbuttons.user.name.Text=game:GetService("Players").LocalPlayer.Name
+	self.gui.outline.outline.outline.tabbuttons.user.logo.Image=game:GetService("Players"):GetUserThumbnailAsync(
+		game:GetService("Players").LocalPlayer.UserId,
+		Enum.ThumbnailType.HeadShot,
+		Enum.ThumbnailSize.Size420x420
+	)
+	
 	return self
+end
+
+function module:HideMenu()
+	for _,category in self.categories do
+		category:HideSettingsHub()
+	end
+	
+	TweenService:Create(self.gui.outline.UIScale,TweenInfo.new(.4,Enum.EasingStyle.Cubic),{Scale=0}):Play()
+	TweenService:Create(self.gui.outline,TweenInfo.new(.15,Enum.EasingStyle.Sine),{GroupTransparency=1}):Play()
+	task.wait(.4)
+	self.gui.Enabled=false
+end
+
+function module:ShowMenu()
+	self.gui.Enabled=true
+	TweenService:Create(self.gui.outline.UIScale,TweenInfo.new(.4,Enum.EasingStyle.Cubic),{Scale=1}):Play()
+	task.wait(.1)
+	TweenService:Create(self.gui.outline,TweenInfo.new(.15,Enum.EasingStyle.Sine),{GroupTransparency=0}):Play()
 end
 
 function module:swap_to_category(category_name: string)
@@ -27,14 +55,16 @@ function module:swap_to_category(category_name: string)
 		self.currentCat=category_name
 	else
 		self.categories[self.currentCat]:Hide()
+		self.categories[self.currentCat]:HideSettingsHub()
+		
 		self.categories[category_name]:Show()
 		
 		self.currentCat=category_name
 	end
 end
 
-function module:add_category(name: string)
-	local category=CategoriesModule.new(name)
+function module:add_category(name: string, decal: string)
+	local category=CategoriesModule.new(name, decal)
 	
 	self.categories[name]=category
 	
@@ -43,6 +73,24 @@ function module:add_category(name: string)
 	end)
 	
 	return category
+end
+
+function module:SetupConnetions()
+	--Open menu
+	UserInputService.InputBegan:Connect(function(key,gpe)
+		if gpe then
+			return
+		end
+		
+		local state=self.gui.Enabled
+		if key.KeyCode==Enum.KeyCode.Insert then
+			if state then
+				self:HideMenu()
+			else
+				self:ShowMenu()
+			end
+		end
+	end)
 end
 
 return module
