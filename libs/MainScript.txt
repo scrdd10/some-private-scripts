@@ -7,6 +7,8 @@ local ContextActionService=game:GetService("ContextActionService")
 --Const
 local Exploiter:Player?=Players.LocalPlayer
 local Camera:Camera?=workspace.CurrentCamera
+
+local h
 --[[rage_category:add_func("exploit","left",
 	function(setting) 
 		print(setting)
@@ -38,12 +40,12 @@ local function draw_esp_box(): Frame
 	local G2L={}
 	
 	-- StarterGui.ESP.Frame
-	G2L["2"] = Instance.new("Frame", Exploiter:WaitForChild("PlayerGui").ESP);
+	G2L["2"] = Instance.new("Frame", h);
 	G2L["2"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
 	G2L["2"]["BorderSizePixel"] = 0;
 	G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 	G2L["2"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
-	G2L["2"]["Size"] = UDim2.new(0.19479, 0, 0.2452, 0);
+	G2L["2"]["Size"] = UDim2.new(0.16479, 0, 0.2452, 0);
 	G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	G2L["2"]["BackgroundTransparency"] = 1;
 
@@ -172,6 +174,8 @@ end
 local c_gui=gui.new("regedit")
 local rage_category=c_gui:add_category("Rage","rbxassetid://12614416478")
 local misc_category=c_gui:add_category("Visuals","rbxassetid://4674746809")
+
+h=c_gui.esp
 
 rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,{
 	["fov"]={
