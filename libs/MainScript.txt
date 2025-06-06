@@ -1,0 +1,64 @@
+--Critical things
+local gui=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/MainGui.txt"))()
+--Services
+local Players=game:GetService("Players")
+local RunService=game:GetService("RunService")
+local ContextActionService=game:GetService("ContextActionService")
+--Const
+local Exploiter=Players.LocalPlayer
+--gui work
+--Code
+--[[rage_category:add_func("exploit","left",
+	function(setting) 
+		print(setting)
+	end,
+	
+	function(setting)
+		print(setting)
+	end
+	,{
+		["person"]={
+			["name"]="switch",
+			["value"]=false,
+			["type"]="switch"
+		},
+		["other"]={
+			["name"]="number only",
+			["value"]=0,
+			["type"]="number"
+		},
+		["some"]={
+			["name"]="string only",
+			["value"]="some",
+			["type"]="string"
+		}
+	},"switch"
+)]]
+
+function Aimbot_enable(settings)
+	
+end
+
+function Aimbot_disable(settings)
+
+end
+
+
+local c_gui=gui.new()
+local rage_category=c_gui:add_category("Rage","rbxassetid://12614416478")
+local misc_category=c_gui:add_category("Visuals","rbxassetid://4674746809")
+
+rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,{
+	["fov"]={
+		["name"]="Aim FOV",
+		["value"]=200,
+		["type"]="number"
+	}
+},"switch")
+
+
+task.spawn(function()
+	while task.wait(.5) do
+		ContextActionService:UnbindAction("RbxCameraKeypress")
+	end
+end)
