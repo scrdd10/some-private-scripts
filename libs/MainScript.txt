@@ -61,7 +61,7 @@ function Aimbot_enable(setting,storage)
 			end
 		end
 		
-		local min:number=math.huge
+		local min:number=2^1024
 		local selected_char:Model
 		for char:Model,distance:number in possible_targets do
 			if distance<min then
