@@ -137,7 +137,7 @@ function ESP_enable(setting,storage)
 			end
 			
 			local esp=players_with_esp[Player]
-			if esp then
+			if not esp then
 				esp=draw_esp_box()
 				players_with_esp[Player]=esp
 			end
