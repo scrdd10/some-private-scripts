@@ -4,6 +4,7 @@ local gui=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/som
 local Players=game:GetService("Players")
 local RunService=game:GetService("RunService")
 local ContextActionService=game:GetService("ContextActionService")
+local Teams=game:GetService("Teams")
 --Const
 local Exploiter:Player?=Players.LocalPlayer
 local Camera:Camera?=workspace.CurrentCamera
@@ -47,18 +48,59 @@ local function draw_esp_box(): Frame
 	G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 	G2L["2"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
 	G2L["2"]["Size"] = UDim2.new(0.16479, 0, 0.2452, 0);
+	G2L["2"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 	G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	G2L["2"]["BackgroundTransparency"] = 1;
 
 
-	-- StarterGui.ESP.Frame.UIScale
+	-- StarterGui.ScreenGui.Frame.UIScale
 	G2L["3"] = Instance.new("UIScale", G2L["2"]);
 
-	-- StarterGui.ESP.Frame.UIStroke
+
+
+	-- StarterGui.ScreenGui.Frame.UIStroke
 	G2L["4"] = Instance.new("UIStroke", G2L["2"]);
 	G2L["4"]["LineJoinMode"] = Enum.LineJoinMode.Miter;
 	G2L["4"]["Thickness"] = 3;
 	G2L["4"]["Color"] = Color3.fromRGB(0, 255, 0);
+
+
+	-- StarterGui.ScreenGui.Frame.name
+	G2L["5"] = Instance.new("TextLabel", G2L["2"]);
+	G2L["5"]["TextWrapped"] = true;
+	G2L["5"]["TextStrokeTransparency"] = 0;
+	G2L["5"]["BorderSizePixel"] = 0;
+	G2L["5"]["TextSize"] = 14;
+	G2L["5"]["TextScaled"] = true;
+	G2L["5"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["5"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+	G2L["5"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["5"]["BackgroundTransparency"] = 1;
+	G2L["5"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	G2L["5"]["Size"] = UDim2.new(1, 0, 0.12, 0);
+	G2L["5"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["5"]["Text"] = [[Valmierov]];
+	G2L["5"]["Name"] = [[name]];
+	G2L["5"]["Position"] = UDim2.new(0.5, 0, 1.1, 0);
+
+
+	-- StarterGui.ScreenGui.Frame.distance
+	G2L["6"] = Instance.new("TextLabel", G2L["2"]);
+	G2L["6"]["TextWrapped"] = true;
+	G2L["6"]["TextStrokeTransparency"] = 0;
+	G2L["6"]["BorderSizePixel"] = 0;
+	G2L["6"]["TextSize"] = 14;
+	G2L["6"]["TextScaled"] = true;
+	G2L["6"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["6"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+	G2L["6"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["6"]["BackgroundTransparency"] = 1;
+	G2L["6"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	G2L["6"]["Size"] = UDim2.new(1, 0, 0.12, 0);
+	G2L["6"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["6"]["Text"] = [[500]];
+	G2L["6"]["Name"] = [[distance]];
+	G2L["6"]["Position"] = UDim2.new(0.5, 0, -0.1, 0);
 
 	return G2L["2"]
 end
@@ -126,18 +168,20 @@ end
 function Aimbot_disable(setting,storage)
 	RunService:UnbindFromRenderStep("Aimbot_thread")
 	storage.locked_person=nil
-	
-	regedit.Aimfov.Visible=false
 end
 
 function ESP_enable(setting,storage)
 	storage.players_with_esp={}
 	local players_with_esp=storage.players_with_esp
+
 	RunService:BindToRenderStep("ESP_update",Enum.RenderPriority.First.Value+1,function()
 		for _,Player:Player in Players:GetPlayers() do
 			if not Player.Character or not Player.Character.PrimaryPart or Player==Exploiter then continue end
 			local PrimaryPart:BasePart=Player.Character.PrimaryPart
-
+			
+			local Distance:number=(Camera.CFrame.Position-PrimaryPart.Position).Magnitude
+			if Distance>setting.distance.value then continue end
+			
 			local pos,onscreen=Camera:WorldToScreenPoint(PrimaryPart.Position)
 			if not onscreen then
 				local e=players_with_esp[Player]
@@ -155,8 +199,24 @@ function ESP_enable(setting,storage)
 			end
 
 			esp.Position=UDim2.new(0,pos.X,0,pos.Y)
-			esp.UIScale.Scale=20/(Camera.CFrame.Position-PrimaryPart.Position).Magnitude
-			esp.UIStroke.Thickness=(Camera.CFrame.Position-PrimaryPart.Position).Magnitude/20
+			esp.UIScale.Scale=20/Distance
+			esp.UIStroke.Thickness=Distance/20
+			
+			esp.name.Text=setting["show_names"].value and Player.Name or ""
+			esp.distance.Text=setting["show_distance"].value and tostring(Distance) or ""
+			
+			if #Teams<1 or not setting["team_check"].value then
+				if esp.UIStroke.Color~=Color3.fromRGB(0, 255, 0) then
+					esp.UIStroke.Color=Color3.fromRGB(0, 255, 0)
+				end
+				continue
+			end
+			
+			if Exploiter.Team==Player.Team then
+				esp.UIStroke.Color=Color3.fromRGB(0, 0, 255)
+			else
+				esp.UIStroke.Color=Color3.fromRGB(0, 255, 0)
+			end
 		end
 	end)
 
@@ -212,7 +272,7 @@ misc_category:add_func("ESP","left",ESP_enable,ESP_disable,{
 		["value"]=500,
 		["type"]="number"
 	},
-	["nicknames"]={
+	["show_names"]={
 		["name"]="Show Names",
 		["value"]=false,
 		["type"]="switch"
