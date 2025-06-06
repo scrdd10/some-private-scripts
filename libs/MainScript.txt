@@ -5,7 +5,8 @@ local Players=game:GetService("Players")
 local RunService=game:GetService("RunService")
 local ContextActionService=game:GetService("ContextActionService")
 --Const
-local Exploiter=Players.LocalPlayer
+local Exploiter:Player?=Players.LocalPlayer
+local Camera:Camera?=workspace.CurrentCamera
 --gui work
 --Code
 --[[rage_category:add_func("exploit","left",
@@ -35,12 +36,55 @@ local Exploiter=Players.LocalPlayer
 	},"switch"
 )]]
 
-function Aimbot_enable(settings)
+function Aimbot_enable(setting,storage)
+	local dot_to_count:Vector2=Vector2.new(Camera.ViewportSize.X/2,Camera.ViewportSize.Y/2)
+	local fov:number=setting.fov.value
 	
+	RunService:BindToRenderStep("Aimbot_thread",Enum.RenderPriority.First.Value,function()
+		local possible_targets={}
+		
+		for _,Player:Player in Players:GetPlayers() do
+			if Player==Exploiter then continue end
+			
+			local Player_character:Model?=Player.Character
+			if not Player_character.PrimaryPart then continue end
+			local Player_primpart:BasePart?=Player_character.PrimaryPart
+			
+			local pos_on_screen:Vector3,onscreen=Camera:WorldToScreenPoint(Player_primpart.Position)
+			if onscreen then
+				local Vec2_pos_on_screen:Vector2=Vector2.new(pos_on_screen.X,pos_on_screen.Y)
+				
+				local distance_in_pixels:number=(Vec2_pos_on_screen-dot_to_count).Magnitude
+				if distance_in_pixels<=fov then
+					possible_targets[Player_character]=distance_in_pixels
+				end
+			end
+		end
+		
+		local min:number=math.huge()
+		local selected_char:Model
+		for char:Model,distance:number in possible_targets do
+			if distance<min then
+				min=distance
+				selected_char=char
+			end
+		end
+		
+		if not selected_char then return end
+		local selected_part:BasePart
+		
+		if selected_char:FindFirstChild("Head") then
+			selected_part=selected_char.Head
+		else
+			selected_part=selected_char.PrimaryPart
+		end
+		
+		Camera.CFrame=CFrame.new(Camera.CFrame.Position,selected_part.Position)
+	end)
 end
 
-function Aimbot_disable(settings)
-
+function Aimbot_disable(setting,storage)
+	RunService:UnbindFromRenderStep("Aimbot_thread")
 end
 
 
@@ -53,6 +97,11 @@ rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,{
 		["name"]="Aim FOV",
 		["value"]=200,
 		["type"]="number"
+	},
+	["fovrender"]={
+		["name"]="Render FOV",
+		["value"]=false,
+		["type"]="switch",
 	}
 },"switch")
 
