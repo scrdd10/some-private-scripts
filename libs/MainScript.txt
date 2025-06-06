@@ -38,7 +38,7 @@ local h
 --Funcs
 local function draw_esp_box(): Frame
 	local G2L={}
-	
+
 	-- StarterGui.ESP.Frame
 	G2L["2"] = Instance.new("Frame", h);
 	G2L["2"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
@@ -58,7 +58,7 @@ local function draw_esp_box(): Frame
 	G2L["4"]["LineJoinMode"] = Enum.LineJoinMode.Miter;
 	G2L["4"]["Thickness"] = 3;
 	G2L["4"]["Color"] = Color3.fromRGB(0, 255, 0);
-	
+
 	return G2L["2"]
 end
 
@@ -122,13 +122,13 @@ function Aimbot_disable(setting,storage)
 end
 
 function ESP_enable(setting,storage)
-    storage.players_with_esp={}
+	storage.players_with_esp={}
 	local players_with_esp=storage.players_with_esp
 	RunService:BindToRenderStep("ESP_update",Enum.RenderPriority.First.Value+1,function()
 		for _,Player:Player in Players:GetPlayers() do
 			if not Player.Character or not Player.Character.PrimaryPart or Player==Exploiter then continue end
 			local PrimaryPart:BasePart=Player.Character.PrimaryPart
-			
+
 			local pos,onscreen=Camera:WorldToScreenPoint(PrimaryPart.Position)
 			if not onscreen then
 				local e=players_with_esp[Player]
@@ -138,19 +138,19 @@ function ESP_enable(setting,storage)
 				end
 				continue
 			end
-			
+
 			local esp=players_with_esp[Player]
 			if not esp then
 				esp=draw_esp_box()
 				players_with_esp[Player]=esp
 			end
-			
+
 			esp.Position=UDim2.new(0,pos.X,0,pos.Y)
 			esp.UIScale.Scale=20/(Camera.CFrame.Position-PrimaryPart.Position).Magnitude
 			esp.UIStroke.Thickness=(Camera.CFrame.Position-PrimaryPart.Position).Magnitude/20
 		end
 	end)
-	
+
 	storage.players_connection=Players.PlayerRemoving:Connect(function(Player:Player)
 		local e=players_with_esp[Player]
 		if players_with_esp[Player] then
@@ -164,7 +164,7 @@ function ESP_disable(setting,storage)
 	RunService:UnbindFromRenderStep("ESP_update")
 	storage.players_connection:Disconnect()
 	storage.players_connection=nil
-	
+
 	for _,esp in storage.players_with_esp do
 		esp:Destroy()
 	end
