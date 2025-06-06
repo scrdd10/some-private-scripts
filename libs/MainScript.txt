@@ -44,7 +44,7 @@ function Aimbot_disable(settings)
 end
 
 
-local c_gui=gui.new()
+local c_gui=gui.new("regedit")
 local rage_category=c_gui:add_category("Rage","rbxassetid://12614416478")
 local misc_category=c_gui:add_category("Visuals","rbxassetid://4674746809")
 
