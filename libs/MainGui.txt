@@ -32,7 +32,9 @@ function module.new(nametag: string)
 		Enum.ThumbnailType.HeadShot,
 		Enum.ThumbnailSize.Size420x420
 	)
-
+	
+	self.open=true
+	
 	return self
 end
 
@@ -44,11 +46,11 @@ function module:HideMenu()
 	TweenService:Create(self.gui.outline.UIScale,TweenInfo.new(.4,Enum.EasingStyle.Cubic),{Scale=0}):Play()
 	TweenService:Create(self.gui.outline,TweenInfo.new(.15,Enum.EasingStyle.Sine),{GroupTransparency=1}):Play()
 	task.wait(.4)
-	self.gui.Enabled=false
+	self.open=false
 end
 
 function module:ShowMenu()
-	self.gui.Enabled=true
+	self.open=true
 	TweenService:Create(self.gui.outline.UIScale,TweenInfo.new(.4,Enum.EasingStyle.Cubic),{Scale=1}):Play()
 	task.wait(.1)
 	TweenService:Create(self.gui.outline,TweenInfo.new(.15,Enum.EasingStyle.Sine),{GroupTransparency=0}):Play()
@@ -88,7 +90,7 @@ function module:SetupConnetions()
 			return
 		end
 
-		local state=self.gui.Enabled
+		local state=self.open
 		if key.KeyCode==Enum.KeyCode.Insert then
 			if state then
 				self:HideMenu()
