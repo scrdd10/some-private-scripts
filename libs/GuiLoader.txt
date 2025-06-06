@@ -4,11 +4,11 @@ function module.createStartGui(name: string?)
 	local G2L = {};
 
 	-- StarterGui.regedit
-	G2L["1"] = Instance.new("ScreenGui", gethui());
+	G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
 	G2L["1"]["IgnoreGuiInset"] = true;
 	G2L["1"]["DisplayOrder"] = 100;
 	G2L["1"]["ScreenInsets"] = Enum.ScreenInsets.DeviceSafeInsets;
-	G2L["1"]["Name"] = name;
+	G2L["1"]["Name"] = [[regedit]];
 	G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 
 
@@ -331,7 +331,7 @@ function module.createStartGui(name: string?)
 	G2L["1e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 	-- [ERROR] cannot convert ImageContent, please report to "https://github.com/uniquadev/GuiToLuaConverter/issues"
 	G2L["1e"]["AnchorPoint"] = Vector2.new(0, 0.5);
-	G2L["1e"]["Image"] = "";
+	G2L["1e"]["Image"] = [[http://www.roblox.com/asset/?id=10268081213]];
 	G2L["1e"]["Size"] = UDim2.new(0.25, 0, 0.25, 0);
 	G2L["1e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	G2L["1e"]["BackgroundTransparency"] = 1;
@@ -464,7 +464,7 @@ function module.createStartGui(name: string?)
 	G2L["2a"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
 	G2L["2a"]["Size"] = UDim2.new(1, 0, 1, 0);
 	G2L["2a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-	G2L["2a"]["Text"] = name;
+	G2L["2a"]["Text"] = [[regedit]];
 	G2L["2a"]["Name"] = [[nametag]];
 	G2L["2a"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
@@ -601,13 +601,38 @@ function module.createStartGui(name: string?)
 	G2L["38"]["HorizontalAlignment"] = Enum.HorizontalAlignment.Center;
 	G2L["38"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
 
-	-- StarterGui.ESP
-	G2L["39"] = Instance.new("ScreenGui", gethui());
-	G2L["39"]["Name"] = [[ESP]];
-	G2L["39"]["DisplayOrder"]=99
-	G2L["39"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+
+	-- StarterGui.regedit.Aimfov
+	G2L["39"] = Instance.new("Frame", G2L["1"]);
+	G2L["39"]["Visible"] = false;
+	G2L["39"]["ZIndex"] = 0;
+	G2L["39"]["BorderSizePixel"] = 0;
+	G2L["39"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["39"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	G2L["39"]["Size"] = UDim2.new(0, 400, 0, 400);
+	G2L["39"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+	G2L["39"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["39"]["Name"] = [[Aimfov]];
+	G2L["39"]["BackgroundTransparency"] = 1;
+
+
+	-- StarterGui.regedit.Aimfov.UICorner
+	G2L["3a"] = Instance.new("UICorner", G2L["39"]);
+	G2L["3a"]["CornerRadius"] = UDim.new(1, 0);
+
+
+	-- StarterGui.regedit.Aimfov.UIStroke
+	G2L["3b"] = Instance.new("UIStroke", G2L["39"]);
+	G2L["3b"]["Thickness"] = 1.5;
+	G2L["3b"]["Color"] = Color3.fromRGB(255, 255, 255);
 	
-	return G2L["1"],G2L["39"]
+	-- StarterGui.ESP
+	G2L["osob"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+	G2L["osob"]["Name"] = [[ESP]];
+	G2L["osob"]["DisplayOrder"]=99
+	G2L["osob"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
+	
+	return G2L["1"],G2L["osob"]
 end
 
 return module
