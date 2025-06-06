@@ -8,7 +8,8 @@ local ContextActionService=game:GetService("ContextActionService")
 local Exploiter:Player?=Players.LocalPlayer
 local Camera:Camera?=workspace.CurrentCamera
 
-local h
+local esp_gui
+local regedit
 --[[rage_category:add_func("exploit","left",
 	function(setting) 
 		print(setting)
@@ -40,7 +41,7 @@ local function draw_esp_box(): Frame
 	local G2L={}
 
 	-- StarterGui.ESP.Frame
-	G2L["2"] = Instance.new("Frame", h);
+	G2L["2"] = Instance.new("Frame", esp_gui);
 	G2L["2"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
 	G2L["2"]["BorderSizePixel"] = 0;
 	G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
@@ -68,6 +69,12 @@ function Aimbot_enable(setting,storage)
 	local fov:number=setting.fov.value
 
 	RunService:BindToRenderStep("Aimbot_thread",Enum.RenderPriority.First.Value,function()
+		local fov:number=setting.fov.value
+		if fov then
+			regedit.Aimfov.Size=UDim2.new(0,fov*2,0,fov*2)
+		end
+		regedit.Aimfov.Visible=setting.fovrender.value
+		
 		local aim=storage.locked_person
 		if storage.locked_person then
 			Camera.CFrame=CFrame.new(Camera.CFrame.Position,aim.Position)
@@ -119,6 +126,8 @@ end
 function Aimbot_disable(setting,storage)
 	RunService:UnbindFromRenderStep("Aimbot_thread")
 	storage.locked_person=nil
+	
+	regedit.Aimfov.Visible=false
 end
 
 function ESP_enable(setting,storage)
@@ -176,7 +185,8 @@ local c_gui=gui.new("regedit")
 local rage_category=c_gui:add_category("Rage","rbxassetid://12614416478")
 local misc_category=c_gui:add_category("Visuals","rbxassetid://4674746809")
 
-h=c_gui.esp
+esp_gui=c_gui.esp
+regedit=c_gui.gui
 
 rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,{
 	["fov"]={
@@ -188,7 +198,7 @@ rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,{
 		["name"]="Render FOV",
 		["value"]=false,
 		["type"]="switch",
-	}
+	},
 },"switch")
 
 misc_category:add_func("ESP","left",ESP_enable,ESP_disable,{
@@ -203,10 +213,15 @@ misc_category:add_func("ESP","left",ESP_enable,ESP_disable,{
 		["type"]="number"
 	},
 	["nicknames"]={
-		["name"]="Names",
+		["name"]="Show Names",
 		["value"]=false,
 		["type"]="switch"
-	}
+	},
+	["show_distance"]={
+		["name"]="Show Distance",
+		["value"]=false,
+		["type"]="switch"
+	},
 },"switch")
 
 task.spawn(function()
