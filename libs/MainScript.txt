@@ -7,8 +7,6 @@ local ContextActionService=game:GetService("ContextActionService")
 --Const
 local Exploiter:Player?=Players.LocalPlayer
 local Camera:Camera?=workspace.CurrentCamera
---gui work
---Code
 --[[rage_category:add_func("exploit","left",
 	function(setting) 
 		print(setting)
@@ -35,38 +33,65 @@ local Camera:Camera?=workspace.CurrentCamera
 		}
 	},"switch"
 )]]
+--Funcs
+local function draw_esp_box(): Frame
+	local G2L={}
+	
+	-- StarterGui.ESP.Frame
+	G2L["2"] = Instance.new("Frame", Exploiter:WaitForChild("PlayerGui").ESP);
+	G2L["2"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
+	G2L["2"]["BorderSizePixel"] = 0;
+	G2L["2"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["2"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	G2L["2"]["Size"] = UDim2.new(0.19479, 0, 0.2452, 0);
+	G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["2"]["BackgroundTransparency"] = 1;
 
+
+	-- StarterGui.ESP.Frame.UIScale
+	G2L["3"] = Instance.new("UIScale", G2L["2"]);
+
+	-- StarterGui.ESP.Frame.UIStroke
+	G2L["4"] = Instance.new("UIStroke", G2L["2"]);
+	G2L["4"]["LineJoinMode"] = Enum.LineJoinMode.Miter;
+	G2L["4"]["Thickness"] = 3;
+	G2L["4"]["Color"] = Color3.fromRGB(0, 255, 0);
+	
+	return G2L["2"]
+end
+
+--Code
 function Aimbot_enable(setting,storage)
 	local dot_to_count:Vector2=Vector2.new(Camera.ViewportSize.X/2,Camera.ViewportSize.Y/2)
 	local fov:number=setting.fov.value
-	
+
 	RunService:BindToRenderStep("Aimbot_thread",Enum.RenderPriority.First.Value,function()
 		local aim=storage.locked_person
 		if storage.locked_person then
 			Camera.CFrame=CFrame.new(Camera.CFrame.Position,aim.Position)
 			return
 		end
-		
+
 		local possible_targets={}
-		
+
 		for _,Player:Player in Players:GetPlayers() do
 			if Player==Exploiter then continue end
-			
+
 			local Player_character:Model?=Player.Character
 			if not Player_character or not Player_character.PrimaryPart then continue end
 			local Player_primpart:BasePart?=Player_character.PrimaryPart
-			
+
 			local pos_on_screen:Vector3,onscreen=Camera:WorldToScreenPoint(Player_primpart.Position)
 			if onscreen then
 				local Vec2_pos_on_screen:Vector2=Vector2.new(pos_on_screen.X,pos_on_screen.Y)
-				
+
 				local distance_in_pixels:number=(Vec2_pos_on_screen-dot_to_count).Magnitude
 				if distance_in_pixels<=fov then
 					possible_targets[Player_character]=distance_in_pixels
 				end
 			end
 		end
-		
+
 		local min:number=2^1024
 		local selected_char:Model
 		for char:Model,distance:number in possible_targets do
@@ -75,16 +100,16 @@ function Aimbot_enable(setting,storage)
 				selected_char=char
 			end
 		end
-		
+
 		if not selected_char then return end
 		local selected_part:BasePart
-		
+
 		if selected_char:FindFirstChild("Head") then
 			selected_part=selected_char.Head
 		else
 			selected_part=selected_char.PrimaryPart
 		end
-		
+
 		storage.locked_person=selected_part
 	end)
 end
@@ -92,6 +117,47 @@ end
 function Aimbot_disable(setting,storage)
 	RunService:UnbindFromRenderStep("Aimbot_thread")
 	storage.locked_person=nil
+end
+
+function ESP_enable(setting,storage)
+	local players_with_esp={}
+	RunService:BindToRenderStep("ESP_update",Enum.RenderPriority.First.Value+1,function()
+		for _,Player:Player in Players:GetPlayers() do
+			if not Player.Character or not Player.Character.PrimaryPart then continue end
+			local PrimaryPart:BasePart=Player.Character.PrimaryPart
+			
+			local pos,onscreen=Camera:WorldToScreenPoint(PrimaryPart.Position)
+			if not onscreen then
+				local e=players_with_esp[Player]
+				if players_with_esp[Player] then
+					players_with_esp[Player]=nil
+					e:Destroy()
+				end
+				continue
+			end
+			
+			local esp:Frame=draw_esp_box()
+			players_with_esp[Player]=esp
+			
+			esp.Position=UDim2.new(0,pos.X,0,pos.Y)
+			esp.UIScale.Scale=20/(Camera.CFrame.Position-PrimaryPart.Position).Magnitude
+			esp.UIStroke.Thickness=(Camera.CFrame.Position-PrimaryPart.Position).Magnitude/20
+		end
+	end)
+	
+	storage.players_connection=Players.PlayerRemoving:Connect(function(Player:Player)
+		local e=players_with_esp[Player]
+		if players_with_esp[Player] then
+			players_with_esp[Player]=nil
+			e:Destroy()
+		end
+	end)
+end
+
+function ESP_disable(setting,storage)
+	RunService:UnbindFromRenderStep("ESP_update")
+	storage.players_connection:Disconnect()
+	storage.players_connection=nil
 end
 
 
@@ -112,6 +178,23 @@ rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,{
 	}
 },"switch")
 
+misc_category:add_func("ESP","left",ESP_enable,ESP_disable,{
+	["team_check"]={
+		["name"]="Team check",
+		["value"]=false,
+		["type"]="switch"
+	},
+	["distance"]={
+		["name"]="Max distance",
+		["value"]=500,
+		["type"]="number"
+	},
+	["nicknames"]={
+		["name"]="Names",
+		["value"]=false,
+		["type"]="switch"
+	}
+},"switch")
 
 task.spawn(function()
 	while task.wait(.5) do
