@@ -1,6 +1,6 @@
 local module = {}
 
-function module.createStartGui()
+function module.createStartGui(name: string?)
 	local G2L = {};
 
 	-- StarterGui.regedit
@@ -8,7 +8,7 @@ function module.createStartGui()
 	G2L["1"]["IgnoreGuiInset"] = true;
 	G2L["1"]["DisplayOrder"] = 100;
 	G2L["1"]["ScreenInsets"] = Enum.ScreenInsets.DeviceSafeInsets;
-	G2L["1"]["Name"] = [[regedit]];
+	G2L["1"]["Name"] = name;
 	G2L["1"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 
 
@@ -464,7 +464,7 @@ function module.createStartGui()
 	G2L["2a"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
 	G2L["2a"]["Size"] = UDim2.new(1, 0, 1, 0);
 	G2L["2a"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
-	G2L["2a"]["Text"] = [[regedit]];
+	G2L["2a"]["Text"] = name;
 	G2L["2a"]["Name"] = [[nametag]];
 	G2L["2a"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
 
