@@ -44,6 +44,7 @@ function Aimbot_enable(setting,storage)
 		local aim=storage.locked_person
 		if storage.locked_person then
 			Camera.CFrame=CFrame.new(Camera.CFrame.Position,aim.Position)
+			return
 		end
 		
 		local possible_targets={}
