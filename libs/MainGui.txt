@@ -14,23 +14,25 @@ module.__index=module
 
 function module.new(nametag: string)
 	local self=setmetatable({},module)
-	
+
 	self.currentCat=nil
-	
+
 	self.categories={}
-	self.gui=funcs.createStartGui(nametag)
-	
+	local maingui,esp=funcs.createStartGui(nametag)
+	self.gui=maingui
+	self.esp=esp
+
 	self.gui:AddTag("MAIN_GUI_CHEAT")
-	
+
 	self:SetupConnetions()
-	
+
 	self.gui.outline.outline.outline.tabbuttons.user.name.Text=Exploiter.Name
 	self.gui.outline.outline.outline.tabbuttons.user.logo.Image=Players:GetUserThumbnailAsync(
 		Exploiter.UserId,
 		Enum.ThumbnailType.HeadShot,
 		Enum.ThumbnailSize.Size420x420
 	)
-	
+
 	return self
 end
 
@@ -38,7 +40,7 @@ function module:HideMenu()
 	for _,category in self.categories do
 		category:HideSettingsHub()
 	end
-	
+
 	TweenService:Create(self.gui.outline.UIScale,TweenInfo.new(.4,Enum.EasingStyle.Cubic),{Scale=0}):Play()
 	TweenService:Create(self.gui.outline,TweenInfo.new(.15,Enum.EasingStyle.Sine),{GroupTransparency=1}):Play()
 	task.wait(.4)
@@ -55,27 +57,27 @@ end
 function module:swap_to_category(category_name: string)
 	if not self.currentCat then
 		self.categories[category_name]:Show()
-		
+
 		self.currentCat=category_name
 	else
 		self.categories[self.currentCat]:Hide()
 		self.categories[self.currentCat]:HideSettingsHub()
-		
+
 		self.categories[category_name]:Show()
-		
+
 		self.currentCat=category_name
 	end
 end
 
 function module:add_category(name: string, decal: string)
 	local category=CategoriesModule.new(name, decal)
-	
+
 	self.categories[name]=category
-	
+
 	category.button.MouseButton1Click:Connect(function()
 		self:swap_to_category(category.name)
 	end)
-	
+
 	return category
 end
 
@@ -85,7 +87,7 @@ function module:SetupConnetions()
 		if gpe then
 			return
 		end
-		
+
 		local state=self.gui.Enabled
 		if key.KeyCode==Enum.KeyCode.Insert then
 			if state then
@@ -95,7 +97,7 @@ function module:SetupConnetions()
 			end
 		end
 	end)
-	
+
 	--Draging gui
 	local dragging_trigger=self.gui.outline.outline.outline.tabbuttons.name
 
@@ -127,4 +129,5 @@ function module:SetupConnetions()
 end
 
 return module
+
 
