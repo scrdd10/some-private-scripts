@@ -1,13 +1,13 @@
+local ExploitModule=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/ExploitModule.txt"))()
+
 local TweenService=game:GetService("TweenService")
 local CollectionService=game:GetService("CollectionService")
 local regedit
 
-local ExploitModule=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/ExploitModule.txt"))()
-
 local module={}
 module.__index=module
 
-function module.new(name: string)
+function module.new(name: string, decal: string)
 	regedit=CollectionService:GetTagged("MAIN_GUI_CHEAT")[1]
 	local tab_buttons=regedit.outline.outline.outline.tabbuttons
 	local main=regedit.outline.outline.outline.main
@@ -15,15 +15,14 @@ function module.new(name: string)
 	local duplicate_of_button=tab_buttons.buttons["button_example"]:Clone()
 
 	duplicate_of_button.Visible=true
+	duplicate_of_button.logo.Image=decal or duplicate_of_button.logo.Image
 	duplicate_of_button.name.Text=name
 	duplicate_of_button.Parent=tab_buttons.buttons
 	
 	local duplicate_cat=main.left["cat_example"]:Clone()
-	
 	duplicate_cat.Parent=main.left
 	
 	local duplicate_cat2=main.left["cat_example"]:Clone()
-	
 	duplicate_cat2.Parent=main.right
 	
 	local self=setmetatable({},module)
@@ -32,6 +31,7 @@ function module.new(name: string)
 	self.name=name
 	
 	self.cat_under={duplicate_cat, duplicate_cat2}
+	self.funcs_under={}
 	
 	return self
 end
@@ -65,7 +65,17 @@ function module:add_func(name: string, where: string, callback_enable, callback_
 		end
 	end
 	
-	return ExploitModule.new(name,selected,callback_enable,callback_disable, sttings, button_type)
+	local NewExploit=ExploitModule.new(name,selected,callback_enable,callback_disable, sttings, button_type)
+	table.insert(self.funcs_under,NewExploit)
+	
+	return NewExploit
+end
+
+function module:HideSettingsHub()
+	if #self.funcs_under<1 then return end
+	for _,ex in self.funcs_under do
+		ex:HideSettingsHub()
+	end
 end
 
 return module
