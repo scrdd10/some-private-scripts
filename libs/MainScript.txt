@@ -47,7 +47,7 @@ function Aimbot_enable(setting,storage)
 			if Player==Exploiter then continue end
 			
 			local Player_character:Model?=Player.Character
-			if not Player_character.PrimaryPart then continue end
+			if not Player_character or not Player_character.PrimaryPart then continue end
 			local Player_primpart:BasePart?=Player_character.PrimaryPart
 			
 			local pos_on_screen:Vector3,onscreen=Camera:WorldToScreenPoint(Player_primpart.Position)
