@@ -122,6 +122,7 @@ function Aimbot_disable(setting,storage)
 end
 
 function ESP_enable(setting,storage)
+    storage.players_with_esp={}
 	local players_with_esp=storage.players_with_esp
 	RunService:BindToRenderStep("ESP_update",Enum.RenderPriority.First.Value+1,function()
 		for _,Player:Player in Players:GetPlayers() do
