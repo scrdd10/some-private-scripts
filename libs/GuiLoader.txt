@@ -324,17 +324,18 @@ function module.createStartGui()
 	G2L["1d"]["Position"] = UDim2.new(0.4, 0, 0.5, 0);
 
 
-	-- StarterGui.regedit.outline.outline.outline.tabbuttons.user.ImageLabel
+	-- StarterGui.regedit.outline.outline.outline.tabbuttons.user.logo
 	G2L["1e"] = Instance.new("ImageLabel", G2L["1c"]);
 	G2L["1e"]["SizeConstraint"] = Enum.SizeConstraint.RelativeXX;
 	G2L["1e"]["BorderSizePixel"] = 0;
 	G2L["1e"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 	-- [ERROR] cannot convert ImageContent, please report to "https://github.com/uniquadev/GuiToLuaConverter/issues"
 	G2L["1e"]["AnchorPoint"] = Vector2.new(0, 0.5);
-	G2L["1e"]["Image"] = [[http://www.roblox.com/asset/?id=10268081213]];
+	G2L["1e"]["Image"] = "";
 	G2L["1e"]["Size"] = UDim2.new(0.25, 0, 0.25, 0);
 	G2L["1e"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	G2L["1e"]["BackgroundTransparency"] = 1;
+	G2L["1e"]["Name"] = [[logo]];
 	G2L["1e"]["Position"] = UDim2.new(0.075, 0, 0.5, 0);
 
 
@@ -478,8 +479,8 @@ function module.createStartGui()
 	G2L["2c"]["AspectRatio"] = 1.09503;
 
 
-	-- StarterGui.regedit.UIScale
-	G2L["2d"] = Instance.new("UIScale", G2L["1"]);
+	-- StarterGui.regedit.outline.UIScale
+	G2L["2d"] = Instance.new("UIScale", G2L["2"]);
 
 
 
