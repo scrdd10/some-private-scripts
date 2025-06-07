@@ -17,11 +17,11 @@ local draw_esp_box=gui_funcs.draw_esp_box
 --Funcs
 local function Lock_property(ints: Instance, propetry: string, set_to): RBXScriptConnection
 	local con
-	
+
 	con=ints:GetPropertyChangedSignal(propetry):Connect(function()
 		ints[propetry]=set_to
 	end)
-	
+
 	--Trigger
 	ints[propetry]=set_to
 	return con
@@ -96,13 +96,13 @@ end
 function HeadScaler_enable(setting,storage)
 	storage.connections_players={}
 	storage.scaled_players={}
-	
+
 	storage.connections_editing_lock={}
 
 	local editing_lock=storage.connections_editing_lock
 	local scaled=storage.scaled_players
 	local connections=storage.connections_players
-	
+
 	local function scale(Player)
 		local default_value={}
 		if not Player.Character or not Player.Character.PrimaryPart or not Player.Character:FindFirstChild("Head") then
@@ -115,9 +115,9 @@ function HeadScaler_enable(setting,storage)
 			for _,element:BasePart in Player.Character.Head:GetChildren() do
 				if element:IsA("BasePart") or element:IsA("Part") then
 					default_value[element]={element.Size, element.Transparency}
-					
+
 					local size=setting.size.value
-					
+
 					editing_lock[Player]={
 						Lock_property(element,"Size",Vector3.new(size,size,size)),
 						Lock_property(element,"Transparency",setting.transparency.value and .8 or element.Transparency),
@@ -125,41 +125,41 @@ function HeadScaler_enable(setting,storage)
 					}
 				end
 			end
-			
+
 			if not editing_lock[Player] then editing_lock[Player]={} end
-			
+
 			local Head:BasePart=Player.Character.Head
 			local size:number?=setting.size.value
-			
+
 			default_value[Head]={Head.Size, Head.Transparency}
-			
+
 			editing_lock[Player][#editing_lock[Player]+1]=Lock_property(Head,"Size",Vector3.new(size,size,size))
 			editing_lock[Player][#editing_lock[Player]+1]=Lock_property(Head,"Transparency",setting.transparency.value and .8 or Head.Transparency)
 			editing_lock[Player][#editing_lock[Player]+1]=Lock_property(Head,"Massless",true)
-			
+
 			scaled[Player]=default_value
 		else
 			local Head:BasePart=Player.Character.Head
 			local size:number?=setting.size.value
-			
+
 			default_value[Head]={Head.Size, Head.Transparency}
-			
-			
+
+
 			editing_lock[Player]={
 				Lock_property(Head,"Size",Vector3.new(size,size,size)),
 				Lock_property(Head,"Transparency",setting.transparency.value and .8 or Head.Transparency),
 				Lock_property(Head,"Massless",true)
 			}
-			
+
 			scaled[Player]=default_value
 		end
 	end
-	
+
 	for _,Player:Player in Players:GetPlayers() do
 		if Player==Exploiter then continue end
-		
+
 		scale(Player)
-		
+
 		local con
 		con=Player.CharacterAdded:Connect(function()
 			scale(Player)
@@ -173,7 +173,7 @@ function HeadScaler_disable(setting,storage)
 	local scaled=storage.scaled_players
 	local connections=storage.connections_players
 	local editing_lock=storage.connections_editing_lock
-	
+
 	for Player:Player,t:{} in editing_lock do
 		for _,connection:RBXScriptConnection in t do
 			connection:Disconnect()
@@ -188,7 +188,7 @@ function HeadScaler_disable(setting,storage)
 			element.Transparency=value[2]
 		end
 	end
-	
+
 	table.clear(scaled)
 	table.clear(connections)
 	table.clear(editing_lock)
@@ -198,18 +198,18 @@ function HeadScaler_update(setting,storage)
 	local scaled=storage.scaled_players
 	local connections=storage.connections_players
 	local editing_lock=storage.connections_editing_lock
-	
+
 	local size=setting.size.value
-	
+
 	if not scaled or not size or size==0 then return end
-	
+
 	for Player:Player,t:{} in editing_lock do
 		for _,connection:RBXScriptConnection in t do
 			connection:Disconnect()
 		end
 	end
 	table.clear(editing_lock)
-	
+
 	for Player:Player,params:{} in scaled do
 		for element:BasePart,value:{} in params do
 			editing_lock[Player]={
@@ -224,7 +224,7 @@ end
 function ESP_enable(setting,storage)
 	storage.players_with_esp={}
 	local players_with_esp=storage.players_with_esp
-	
+
 	local function destroy_esp(Player)
 		local e=players_with_esp[Player]
 		if players_with_esp[Player] then
@@ -232,7 +232,7 @@ function ESP_enable(setting,storage)
 			e:Destroy()
 		end
 	end
-	
+
 	RunService:BindToRenderStep("ESP_update",Enum.RenderPriority.First.Value+1,function()
 		for _,Player:Player in Players:GetPlayers() do
 			if not Player.Character or not Player.Character.PrimaryPart or Player==Exploiter then
@@ -241,15 +241,19 @@ function ESP_enable(setting,storage)
 			end
 			local PrimaryPart:BasePart=Player.Character.PrimaryPart
 			
-			local Distance:number=setting["calc_from_cam"].value and
-				(Camera.CFrame.Position-PrimaryPart.Position).Magnitude or
-				(Exploiter.Character.PrimaryPart.Position-PrimaryPart.Position).Magnitude
-			
+			local Distance:number
+			if Exploiter.Character and Exploiter.Character.PrimaryPart and not setting["calc_from_cam"].value then
+				local ExPrim=Exploiter.Character.PrimaryPart
+				Distance=(ExPrim.Position-PrimaryPart.Position).Magnitude
+			else
+				Distance=(Camera.CFrame.Position-PrimaryPart.Position).Magnitude
+			end
+
 			if Distance>setting.distance.value then
 				destroy_esp(Player)
 				continue
 			end
-			
+
 			local pos,onscreen=Camera:WorldToScreenPoint(PrimaryPart.Position)
 			if not onscreen then
 				destroy_esp(Player)
@@ -265,20 +269,20 @@ function ESP_enable(setting,storage)
 			esp.Position=UDim2.new(0,pos.X,0,pos.Y)
 			esp.UIScale.Scale=20/Distance
 			esp.UIStroke.Thickness=Distance/20
-			
+
 			esp.name.Text=setting["show_names"].value and Player.Name or ""
 			esp.distance.Text=setting["show_distance"].value and tostring(math.floor(Distance)) or ""
-			
+
 			esp.name.UIScale.Scale=Distance/35
 			esp.distance.UIScale.Scale=Distance/35
-			
+
 			if #Teams:GetChildren()<1 or not setting["team_check"].value then
 				if esp.UIStroke.Color~=Color3.fromRGB(0, 255, 0) then
 					esp.UIStroke.Color=Color3.fromRGB(0, 255, 0)
 				end
 				continue
 			end
-			
+
 			if Exploiter.Team==Player.Team then
 				esp.UIStroke.Color=Color3.fromRGB(0, 0, 255)
 			else
