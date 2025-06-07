@@ -14,6 +14,8 @@ local esp_gui
 local regedit
 
 local draw_esp_box=gui_funcs.draw_esp_box
+
+local rand=math.random
 --Funcs
 local function Lock_property(ints: Instance, propetry: string, set_to): RBXScriptConnection
 	local con
@@ -135,7 +137,7 @@ function HeadScaler_enable(setting,storage)
 
 					local size:number?=setting.size.value
 
-					editing_lock[Player]={
+					editing_lock[#editing_lock+1]={
 						Lock_property(element,"Size",Vector3.new(size,size,size)),
 						Lock_property(element,"Transparency",setting.transparency.value and .8 or element.Transparency),
 						Lock_property(element,"Massless",true)
@@ -333,7 +335,38 @@ function ESP_disable(setting,storage)
 	table.clear(storage.players_with_esp)
 end
 
-function ESP_update()
+function ESP_update(setting,storage)
+	return
+end
+
+function Antiaim_enable(setting,storage)
+	storage.default_setting={}
+	
+	local default_settings=storage.default_setting
+	RunService:BindToRenderStep("Antiaim",Enum.RenderPriority.First.Value+2,function()
+		if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
+		
+		if not default_settings[Exploiter.Character.Humanoid] then
+			default_settings[Exploiter.Character.Humanoid]=Exploiter.Character.Humanoid.AutoRotate
+			Exploiter.Character.Humanoid.AutoRotate=false
+		end
+
+		local Exploiter_primarypart:BasePart?=Exploiter.Character.PrimaryPart
+		Exploiter_primarypart.CFrame=CFrame.new(
+			Exploiter_primarypart.CFrame.Position,
+			Vector3.new(rand(-100,100),Exploiter_primarypart.CFrame.Position.Y,rand(-100,100))
+		)
+	end)
+end
+
+function Antiaim_disable(setting,storage)
+	local default_settings=storage.default_setting
+	
+	RunService:UnbindFromRenderStep("Antiaim")
+	Exploiter.Character.Humanoid.AutoRotate=default_settings[Exploiter.Character.Humanoid]
+end
+
+function Antiaim_update(setting,storage)
 	return
 end
 
@@ -363,7 +396,7 @@ rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,Aimbot_updat
 	}
 },"switch")
 
-rage_category:add_func("Head Scaler","left",HeadScaler_enable,HeadScaler_disable,HeadScaler_update,{
+rage_category:add_func("Head scaler","left",HeadScaler_enable,HeadScaler_disable,HeadScaler_update,{
 	["size"]={
 		["name"]="Head scale",
 		["value"]=5,
@@ -380,6 +413,8 @@ rage_category:add_func("Head Scaler","left",HeadScaler_enable,HeadScaler_disable
 		["type"]="switch"
 	}
 },"switch")
+
+rage_category:add_func("Anti aim","left",Antiaim_enable,Antiaim_disable,Antiaim_update,{},"switch")
 
 misc_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
 	["team_check"]={
