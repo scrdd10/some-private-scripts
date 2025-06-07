@@ -55,7 +55,7 @@ function module:Hide()
 	end
 end
 
-function module:add_func(name: string, where: string, callback_enable, callback_disable, sttings: {}, button_type: string)
+function module:add_func(name: string, where: string, callback_enable, callback_disable, callback_update, sttings: {}, button_type: string)
 	local main=regedit.outline.outline.outline.main
 
 	local selected
@@ -65,7 +65,7 @@ function module:add_func(name: string, where: string, callback_enable, callback_
 		end
 	end
 
-	local NewExploit=ExploitModule.new(name,selected,callback_enable,callback_disable, sttings, button_type)
+	local NewExploit=ExploitModule.new(name,selected,callback_enable,callback_disable,callback_update,sttings,button_type)
 	table.insert(self.funcs_under,NewExploit)
 
 	return NewExploit
