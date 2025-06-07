@@ -118,12 +118,6 @@ function Aimbot_enable(setting,storage)
 	local fov:number=setting.fov.value
 
 	RunService:BindToRenderStep("Aimbot_thread",Enum.RenderPriority.First.Value,function()
-		local fov:number=setting.fov.value
-		if fov then
-			regedit.Aimfov.Size=UDim2.new(0,fov*2,0,fov*2)
-		end
-		regedit.Aimfov.Visible=setting.fovrender.value
-		
 		local aim=storage.locked_person
 		if storage.locked_person then
 			Camera.CFrame=CFrame.new(Camera.CFrame.Position,aim.Position)
@@ -177,20 +171,21 @@ function Aimbot_disable(setting,storage)
 	storage.locked_person=nil
 end
 
+function Aimbot_update(setting,storage)
+	local fov:number=setting.fov.value
+	if fov then
+		regedit.Aimfov.Size=UDim2.new(0,fov*2,0,fov*2)
+	end
+	regedit.Aimfov.Visible=setting.fovrender.value
+end
+
 function ESP_enable(setting,storage)
 	storage.players_with_esp={}
 	local players_with_esp=storage.players_with_esp
 
 	RunService:BindToRenderStep("ESP_update",Enum.RenderPriority.First.Value+1,function()
 		for _,Player:Player in Players:GetPlayers() do
-			if not Player.Character or not Player.Character.PrimaryPart or Player==Exploiter then
-			    local e=players_with_esp[Player]
-				if players_with_esp[Player] then
-					players_with_esp[Player]=nil
-					e:Destroy()
-				end
-			    continue
-			end
+			if not Player.Character or not Player.Character.PrimaryPart or Player==Exploiter then continue end
 			local PrimaryPart:BasePart=Player.Character.PrimaryPart
 			
 			local Distance:number=(Camera.CFrame.Position-PrimaryPart.Position).Magnitude
@@ -264,6 +259,10 @@ function ESP_disable(setting,storage)
 	table.clear(storage.players_with_esp)
 end
 
+function ESP_update()
+	return
+end
+
 
 local c_gui=gui.new("regedit")
 local rage_category=c_gui:add_category("Rage","rbxassetid://12614416478")
@@ -272,7 +271,7 @@ local misc_category=c_gui:add_category("Visuals","rbxassetid://4674746809")
 esp_gui=c_gui.esp
 regedit=c_gui.gui
 
-rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,{
+rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,Aimbot_update,{
 	["fov"]={
 		["name"]="Aim FOV",
 		["value"]=200,
@@ -285,7 +284,7 @@ rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,{
 	},
 },"switch")
 
-misc_category:add_func("ESP","left",ESP_enable,ESP_disable,{
+misc_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
 	["team_check"]={
 		["name"]="Team check",
 		["value"]=false,
