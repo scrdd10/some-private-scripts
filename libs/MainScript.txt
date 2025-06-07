@@ -159,7 +159,7 @@ function HeadScaler_enable(setting,storage)
 	end
 	
 	for _,Player:Player in Players:GetPlayers() do
-		--if Player==Exploiter then continue end
+		if Player==Exploiter then continue end
 		scale(Player)
 	end
 	connections.PlayerAdded=Players.PlayerAdded:Connect(scale)
