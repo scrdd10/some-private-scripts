@@ -81,14 +81,11 @@ function Aimbot_enable(setting,storage)
 end
 
 function Aimbot_disable(setting,storage)
-	local aim:BasePart=storage.locked_person
-	
 	RunService:UnbindFromRenderStep("Aimbot_thread")
-	aim=nil
+	storage.locked_person=nil
 end
 
 function Aimbot_update(setting,storage)
-	local aim:BasePart=storage.locked_person
 	local fov:number=setting.fov.value
 	
 	if fov then
@@ -97,7 +94,7 @@ function Aimbot_update(setting,storage)
 	regedit.Aimfov.Visible=setting.fovrender.value
 	
 	if setting["team_check"].value then
-		aim=nil
+		storage.locked_person=nil
 	end
 end
 
@@ -124,13 +121,13 @@ function HeadScaler_enable(setting,storage)
 		if resolver then			
 			local Possible_hitboxes=workspace:GetPartBoundsInRadius(
 				Character.Head.Position,
-				.285,
+				.2,
 				OverlapParams.new()
 			)
 			
 			for _,element:BasePart in Possible_hitboxes do
 				if element:IsA("BasePart") or element:IsA("Part") then
-					if element.Parent:IsA("Accessory") or not element:IsAncestorOf(Player.Character) then continue end
+					if element.Parent:IsA("Accessory") or not element:IsDescendantOf(Player.Character) then continue end
 					
 					default_value[element]={element.Size, element.Transparency}
 
