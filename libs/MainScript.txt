@@ -121,35 +121,7 @@ function HeadScaler_enable(setting,storage)
 
 		local resolver=setting["resolver"].value
 
-		if resolver then
-			--[[for _,element:BasePart in Player.Character.Head:GetChildren() do
-				if element:IsA("BasePart") or element:IsA("Part") then
-					default_value[element]={element.Size, element.Transparency}
-
-					local size=setting.size.value
-
-					editing_lock[Player]={
-						Lock_property(element,"Size",Vector3.new(size,size,size)),
-						Lock_property(element,"Transparency",setting.transparency.value and .8 or element.Transparency),
-						Lock_property(element,"Massless",true)
-					}
-				end
-			end
-
-			if not editing_lock[Player] then editing_lock[Player]={} end
-
-			local Head:BasePart=Player.Character.Head
-			local size:number?=setting.size.value
-
-			default_value[Head]={Head.Size, Head.Transparency}
-
-			editing_lock[Player][#editing_lock[Player]+1]=Lock_property(Head,"Size",Vector3.new(size,size,size))
-			editing_lock[Player][#editing_lock[Player]+1]=Lock_property(Head,"Transparency",setting.transparency.value and .8 or Head.Transparency)
-			editing_lock[Player][#editing_lock[Player]+1]=Lock_property(Head,"Massless",true)
-
-			scaled[Player]=default_value]]
-			
-			
+		if resolver then			
 			local Possible_hitboxes=workspace:GetPartBoundsInRadius(
 				Character.Head.Position,
 				.285,
@@ -158,7 +130,7 @@ function HeadScaler_enable(setting,storage)
 			
 			for _,element:BasePart in Possible_hitboxes do
 				if element:IsA("BasePart") or element:IsA("Part") then
-					if element.Parent:IsA("Accessory") then continue end
+					if element.Parent:IsA("Accessory") or not element:IsAncestorOf(Player.Character) then continue end
 					
 					default_value[element]={element.Size, element.Transparency}
 
@@ -171,6 +143,7 @@ function HeadScaler_enable(setting,storage)
 					}
 				end
 			end
+			
 			scaled[Player]=default_value
 		else
 			local Head:BasePart=Player.Character.Head
@@ -190,17 +163,23 @@ function HeadScaler_enable(setting,storage)
 	end
 
 	for _,Player:Player in Players:GetPlayers() do
-		--if Player==Exploiter then continue end
+		if Player==Exploiter then continue end
 
 		scale(Player)
 
 		local con
 		con=Player.CharacterAdded:Connect(function()
+			repeat task.wait(.1) until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
 			scale(Player)
 		end)
-		connections[Player.Name]=con
+		connections[Player]=con
 	end
-	connections.PlayerAdded=Players.PlayerAdded:Connect(scale)
+	connections.PlayerAdded=Players.PlayerAdded:Connect(function(Player)
+		repeat task.wait(.1) until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
+		scale(Player)
+	end)
+	
+	
 end
 
 function HeadScaler_disable(setting,storage)
