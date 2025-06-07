@@ -183,7 +183,14 @@ function ESP_enable(setting,storage)
 
 	RunService:BindToRenderStep("ESP_update",Enum.RenderPriority.First.Value+1,function()
 		for _,Player:Player in Players:GetPlayers() do
-			if not Player.Character or not Player.Character.PrimaryPart or Player==Exploiter then continue end
+			if not Player.Character or not Player.Character.PrimaryPart or Player==Exploiter then
+			    local e=players_with_esp[Player]
+				if players_with_esp[Player] then
+					players_with_esp[Player]=nil
+					e:Destroy()
+				end
+			    continue
+			end
 			local PrimaryPart:BasePart=Player.Character.PrimaryPart
 			
 			local Distance:number=(Camera.CFrame.Position-PrimaryPart.Position).Magnitude
