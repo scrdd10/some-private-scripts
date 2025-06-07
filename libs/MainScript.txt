@@ -40,6 +40,10 @@ local draw_esp_box=gui_funcs.draw_esp_box
 		}
 	},"switch"
 )]]
+--Funcs
+local function size_part(part:BasePart, value:number)
+	part.Size=Vector3.new(value,value,value)
+end
 --Code
 function Aimbot_enable(setting,storage)
 	local dot_to_count:Vector2=Vector2.new(Camera.ViewportSize.X/2,Camera.ViewportSize.Y/2)
@@ -105,6 +109,76 @@ function Aimbot_update(setting,storage)
 		regedit.Aimfov.Size=UDim2.new(0,fov*2,0,fov*2)
 	end
 	regedit.Aimfov.Visible=setting.fovrender.value
+end
+
+function HeadScaler_enable(setting,storage)
+	storage.connections_players={}
+	storage.scaled_players={}
+	
+	local scaled=storage.scaled_players
+	local connections=storage.connections_players
+	
+	local function scale(Player)
+		local default_value={}
+		if not Player.Character or not Player.Character.PrimaryPart or not Player.Character:FindFirstChild("Head") or scaled[Player] then
+			return
+		end
+
+		local state_scaling_childs=setting["size_childs"].value
+
+		if state_scaling_childs then
+			for _,element:BasePart in Player.Character.Head:GetChildren() do
+				if element:IsA("BasePart") or element:IsA("Part") then
+					default_value[element]={element.Size, element.Transparency}
+					size_part(element,setting.size.value)
+				end
+			end
+			default_value[Player.Character.Head]={Player.Character.Head.Size, Player.Character.Head.Transparency}
+			size_part(Player.Character.Head,setting.size.value)
+			
+			scaled[Player]=default_value
+		else
+			default_value[Player.Character.Head]={Player.Character.Head.Size, Player.Character.Head.Transparency}
+			size_part(Player.Character.Head,setting.size.value)
+			
+			scaled[Player]=default_value
+		end
+	end
+	
+	for _,Player:Player in Players:GetPlayers() do
+		if Player==Exploiter then continue end
+		scale(Player)
+	end
+	connections.PlayerAdded=Players.PlayerAdded:Connect(scale)
+end
+
+function HeadScaler_disable(setting,storage)
+	local scaled=storage.scaled_players
+	local connections=storage.connections_players
+	
+	for _,connection:RBXScriptConnection in connections do
+		connection:Disconnect()
+	end
+	for _,params:{} in scaled do
+		for element:BasePart,value:{} in params do
+			size_part(element,value[1])
+			element.Transparency=value[2]
+		end
+	end
+	
+	table.clear(scaled)
+	table.clear(connections)
+end
+
+function HeadScaler_update(setting,storage)
+	local scaled=storage.scaled_players
+	
+	for Player:Player,params:{} in scaled do
+		for element:BasePart,_ in params do
+			size_part(element,setting.size.value)
+			element.Transparency=setting.transparency.value and .8 or 0
+		end
+	end
 end
 
 function ESP_enable(setting,storage)
@@ -217,6 +291,24 @@ rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,Aimbot_updat
 		["value"]=false,
 		["type"]="switch",
 	},
+},"switch")
+
+rage_category:add_func("Head Scaler","left",HeadScaler_enable,HeadScaler_disable,HeadScaler_update,{
+	["size"]={
+		["name"]="Head scale",
+		["value"]=5,
+		["type"]="number"
+	},
+	["size_childs"]={
+		["name"]="Size childrens",
+		["value"]=false,
+		["type"]="switch",
+	},
+	["transparency"]={
+		["name"]="Head transparency",
+		["value"]=false,
+		["type"]="switch"
+	}
 },"switch")
 
 misc_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
