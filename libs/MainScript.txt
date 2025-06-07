@@ -131,22 +131,35 @@ function HeadScaler_enable(setting,storage)
 				if element:IsA("BasePart") or element:IsA("Part") then
 					default_value[element]={element.Size, element.Transparency}
 					size_part(element,setting.size.value)
+					
+					element.Transparency=setting.transparency.value and .8 or element.Transparency
+					element.Massless=true
 				end
 			end
-			default_value[Player.Character.Head]={Player.Character.Head.Size, Player.Character.Head.Transparency}
-			size_part(Player.Character.Head,setting.size.value)
+			local Head:BasePart=Player.Character.Head
+			
+			default_value[Head]={Head.Size, Head.Transparency}
+			size_part(Head,setting.size.value)
+			
+			Head.Transparency=setting.transparency.value and .8 or Head.Transparency
+			Head.Massless=true
 			
 			scaled[Player]=default_value
 		else
-			default_value[Player.Character.Head]={Player.Character.Head.Size, Player.Character.Head.Transparency}
-			size_part(Player.Character.Head,setting.size.value)
+			local Head=Player.Character.Head
+			
+			default_value[Head]={Head.Size, Head.Transparency}
+			size_part(Head,setting.size.value)
+			
+			Head.Transparency=setting.transparency.value and .8 or Head.Transparency
+			Head.Massless=true
 			
 			scaled[Player]=default_value
 		end
 	end
 	
 	for _,Player:Player in Players:GetPlayers() do
-		if Player==Exploiter then continue end
+		--if Player==Exploiter then continue end
 		scale(Player)
 	end
 	connections.PlayerAdded=Players.PlayerAdded:Connect(scale)
@@ -161,7 +174,7 @@ function HeadScaler_disable(setting,storage)
 	end
 	for _,params:{} in scaled do
 		for element:BasePart,value:{} in params do
-			size_part(element,value[1])
+			element.Size=value[1]
 			element.Transparency=value[2]
 		end
 	end
@@ -173,10 +186,12 @@ end
 function HeadScaler_update(setting,storage)
 	local scaled=storage.scaled_players
 	
+	if not scaled then return end
+	
 	for Player:Player,params:{} in scaled do
-		for element:BasePart,_ in params do
+		for element:BasePart,value:{} in params do
 			size_part(element,setting.size.value)
-			element.Transparency=setting.transparency.value and .8 or 0
+			element.Transparency=setting.transparency.value and .8 or value[2]
 		end
 	end
 end
