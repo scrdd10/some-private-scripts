@@ -168,21 +168,28 @@ function HeadScaler_enable(setting,storage)
 
 		local con
 		con=Player.CharacterAdded:Connect(function()
-			repeat task.wait(.5) until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
+			repeat task.wait(.5)
+			until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
+			
 			scale(Player)
 		end)
-		connections[Player]=con
+		connections[#connections+1]=con
 	end
+	
 	connections.PlayerAdded=Players.PlayerAdded:Connect(function(Player)
-		repeat task.wait(.5) until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
+		repeat task.wait(.5)
+		until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
+		
 		scale(Player)
 		
 		local con
 		con=Player.CharacterAdded:Connect(function()
-			repeat task.wait(.5) until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
+			repeat task.wait(.5)
+			until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
+			
 			scale(Player)
 		end)
-		connections[Player]=con
+		connections[#connections+1]=con
 	end)
 
 
