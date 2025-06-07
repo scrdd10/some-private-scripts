@@ -32,7 +32,7 @@ function Aimbot_enable(setting,storage)
 	local fov:number=setting.fov.value
 
 	RunService:BindToRenderStep("Aimbot_thread",Enum.RenderPriority.First.Value,function()
-		local aim=storage.locked_person
+		local aim:BasePart=storage.locked_person
 		if storage.locked_person then
 			Camera.CFrame=CFrame.new(Camera.CFrame.Position,aim.Position)
 			return
@@ -41,12 +41,12 @@ function Aimbot_enable(setting,storage)
 		local possible_targets={}
 
 		for _,Player:Player in Players:GetPlayers() do
-			if Player==Exploiter then continue end
-
+			if Player==Exploiter or (Player.Team==Exploiter.Team and setting["team_check"].value) then continue end
+			
 			local Player_character:Model?=Player.Character
 			if not Player_character or not Player_character.PrimaryPart then continue end
 			local Player_primpart:BasePart?=Player_character.PrimaryPart
-
+		
 			local pos_on_screen:Vector3,onscreen=Camera:WorldToScreenPoint(Player_primpart.Position)
 			if onscreen then
 				local Vec2_pos_on_screen:Vector2=Vector2.new(pos_on_screen.X,pos_on_screen.Y)
@@ -81,16 +81,24 @@ function Aimbot_enable(setting,storage)
 end
 
 function Aimbot_disable(setting,storage)
+	local aim:BasePart=storage.locked_person
+	
 	RunService:UnbindFromRenderStep("Aimbot_thread")
-	storage.locked_person=nil
+	aim=nil
 end
 
 function Aimbot_update(setting,storage)
+	local aim:BasePart=storage.locked_person
 	local fov:number=setting.fov.value
+	
 	if fov then
 		regedit.Aimfov.Size=UDim2.new(0,fov*2,0,fov*2)
 	end
 	regedit.Aimfov.Visible=setting.fovrender.value
+	
+	if setting["team_check"].value then
+		aim=nil
+	end
 end
 
 function HeadScaler_enable(setting,storage)
@@ -108,11 +116,13 @@ function HeadScaler_enable(setting,storage)
 		if not Player.Character or not Player.Character.PrimaryPart or not Player.Character:FindFirstChild("Head") then
 			return
 		end
+		
+		local Character=Player.Character
 
-		local state_scaling_childs=setting["size_childs"].value
+		local resolver=setting["resolver"].value
 
-		if state_scaling_childs then
-			for _,element:BasePart in Player.Character.Head:GetChildren() do
+		if resolver then
+			--[[for _,element:BasePart in Player.Character.Head:GetChildren() do
 				if element:IsA("BasePart") or element:IsA("Part") then
 					default_value[element]={element.Size, element.Transparency}
 
@@ -137,6 +147,30 @@ function HeadScaler_enable(setting,storage)
 			editing_lock[Player][#editing_lock[Player]+1]=Lock_property(Head,"Transparency",setting.transparency.value and .8 or Head.Transparency)
 			editing_lock[Player][#editing_lock[Player]+1]=Lock_property(Head,"Massless",true)
 
+			scaled[Player]=default_value]]
+			
+			
+			local Possible_hitboxes=workspace:GetPartBoundsInRadius(
+				Character.Head.Position,
+				.285,
+				OverlapParams.new()
+			)
+			
+			for _,element:BasePart in Possible_hitboxes do
+				if element:IsA("BasePart") or element:IsA("Part") then
+					if element.Parent:IsA("Accessory") then continue end
+					
+					default_value[element]={element.Size, element.Transparency}
+
+					local size:number?=setting.size.value
+
+					editing_lock[Player]={
+						Lock_property(element,"Size",Vector3.new(size,size,size)),
+						Lock_property(element,"Transparency",setting.transparency.value and .8 or element.Transparency),
+						Lock_property(element,"Massless",true)
+					}
+				end
+			end
 			scaled[Player]=default_value
 		else
 			local Head:BasePart=Player.Character.Head
@@ -156,7 +190,7 @@ function HeadScaler_enable(setting,storage)
 	end
 
 	for _,Player:Player in Players:GetPlayers() do
-		if Player==Exploiter then continue end
+		--if Player==Exploiter then continue end
 
 		scale(Player)
 
@@ -330,6 +364,11 @@ rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,Aimbot_updat
 		["value"]=false,
 		["type"]="switch",
 	},
+	["team_check"]={
+		["name"]="Team check",
+		["value"]=false,
+		["type"]="switch",
+	}
 },"switch")
 
 rage_category:add_func("Head Scaler","left",HeadScaler_enable,HeadScaler_disable,HeadScaler_update,{
@@ -338,8 +377,8 @@ rage_category:add_func("Head Scaler","left",HeadScaler_enable,HeadScaler_disable
 		["value"]=5,
 		["type"]="number"
 	},
-	["size_childs"]={
-		["name"]="Size childrens",
+	["resolver"]={
+		["name"]="Resolve head HB",
 		["value"]=false,
 		["type"]="switch",
 	},
