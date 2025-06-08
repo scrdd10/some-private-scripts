@@ -140,7 +140,8 @@ function HeadScaler_enable(setting,storage)
 					editing_lock[#editing_lock+1]={
 						Lock_property(element,"Size",Vector3.new(size,size,size)),
 						Lock_property(element,"Transparency",setting.transparency.value and .8 or element.Transparency),
-						Lock_property(element,"Massless",true)
+						Lock_property(element,"Massless",true),
+						Lock_property(element,"CanCollide",false)
 					}
 				end
 			end
@@ -156,7 +157,8 @@ function HeadScaler_enable(setting,storage)
 			editing_lock[Player]={
 				Lock_property(Head,"Size",Vector3.new(size,size,size)),
 				Lock_property(Head,"Transparency",setting.transparency.value and .8 or Head.Transparency),
-				Lock_property(Head,"Massless",true)
+				Lock_property(Head,"Massless",true),
+				Lock_property(Head,"CanCollide",false)
 			}
 
 			scaled[Player]=default_value
@@ -172,23 +174,23 @@ function HeadScaler_enable(setting,storage)
 		con=Player.CharacterAdded:Connect(function()
 			repeat task.wait(.5)
 			until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
-			
+
 			scale(Player)
 		end)
 		connections[#connections+1]=con
 	end
-	
+
 	connections.PlayerAdded=Players.PlayerAdded:Connect(function(Player)
 		repeat task.wait(.5)
 		until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
-		
+
 		scale(Player)
-		
+
 		local con
 		con=Player.CharacterAdded:Connect(function()
 			repeat task.wait(.5)
 			until Player.Character and Player.Character.PrimaryPart and Player.Character:FindFirstChild("Head")
-			
+
 			scale(Player)
 		end)
 		connections[#connections+1]=con
@@ -243,7 +245,8 @@ function HeadScaler_update(setting,storage)
 			editing_lock[Player]={
 				Lock_property(element,"Size",Vector3.new(size,size,size)),
 				Lock_property(element,"Transparency",setting.transparency.value and .8 or value[2]),
-				Lock_property(element,"Massless",true)
+				Lock_property(element,"Massless",true),
+				Lock_property(element,"CanCollide",false)
 			}
 		end
 	end
@@ -341,11 +344,11 @@ end
 
 function Antiaim_enable(setting,storage)
 	storage.default_setting={}
-	
+
 	local default_settings=storage.default_setting
 	RunService:BindToRenderStep("Antiaim",Enum.RenderPriority.First.Value+2,function()
 		if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
-		
+
 		if not default_settings[Exploiter.Character.Humanoid] then
 			default_settings[Exploiter.Character.Humanoid]=Exploiter.Character.Humanoid.AutoRotate
 			Exploiter.Character.Humanoid.AutoRotate=false
@@ -361,7 +364,7 @@ end
 
 function Antiaim_disable(setting,storage)
 	local default_settings=storage.default_setting
-	
+
 	RunService:UnbindFromRenderStep("Antiaim")
 	Exploiter.Character.Humanoid.AutoRotate=default_settings[Exploiter.Character.Humanoid]
 end
