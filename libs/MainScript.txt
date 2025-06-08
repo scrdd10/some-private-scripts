@@ -1,3 +1,4 @@
+if getgenv().regedit_loaded then return end
 --Critical things
 local gui=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/MainGui.txt"))()
 local gui_funcs=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/GuiFuncs.txt"))()
@@ -447,8 +448,17 @@ misc_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
 	}
 },"switch")
 
+local On_teleport_already=false
+Exploiter.OnTeleport:Connect(function()
+	if not On_teleport_already then
+		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/MainScript.txt'))()")
+	end
+end)
+
 task.spawn(function()
-	while task.wait(.5) do
+	while task.wait(1) do
 		ContextActionService:UnbindAction("RbxCameraKeypress")
 	end
 end)
+
+getgenv().regedit_loaded=true
