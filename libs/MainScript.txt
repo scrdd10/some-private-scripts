@@ -460,7 +460,7 @@ visuals_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
 local On_teleport_already=false
 Exploiter.OnTeleport:Connect(function()
 	if not On_teleport_already then
-		queueteleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/MainScript.txt'))()")
+		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/MainScript.txt'))()")
 	end
 end)
 
