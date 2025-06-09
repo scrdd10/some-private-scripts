@@ -18,11 +18,11 @@ function module.new(nametag: string)
 	self.currentCat=nil
 
 	self.categories={}
-	local maingui,esp=funcs.createStartGui(nametag)
+	local maingui,esp,settingshub=funcs.createStartGui(nametag)
+	
 	self.gui=maingui
 	self.esp=esp
-
-	self.gui:AddTag("MAIN_GUI_CHEAT")
+	self.settingshub=settingshub
 
 	self:SetupConnetions()
 
@@ -32,8 +32,10 @@ function module.new(nametag: string)
 		Enum.ThumbnailType.HeadShot,
 		Enum.ThumbnailSize.Size420x420
 	)
-	
+
 	self.open=true
+	
+	self.gui:AddTag("MAIN_GUI_CHEAT")
 	
 	return self
 end
@@ -103,11 +105,12 @@ function module:SetupConnetions()
 	--Draging gui
 	local dragging_trigger=self.gui.outline.outline.outline.tabbuttons.name
 
-	local starting_pos:UDim2
+	local starting_pos_main_gui:UDim2
+	local starting_pos_settings_hub:UDim2
 	local lastMousePos:UDim2
 	local drag=false
 
-	local function update_pos(inputing_pos)
+	local function update_pos(inputing_pos,starting_pos)
 		local deviation:UDim2=lastMousePos-inputing_pos
 		return UDim2.new(starting_pos.X.Scale,starting_pos.X.Offset-deviation.X.Offset,starting_pos.Y.Scale,starting_pos.Y.Offset-deviation.Y.Offset)
 	end
@@ -115,7 +118,8 @@ function module:SetupConnetions()
 	dragging_trigger:GetPropertyChangedSignal("GuiState"):Connect(function()
 		if dragging_trigger.GuiState==Enum.GuiState.Press then
 			drag=true
-			starting_pos=self.gui.outline.Position
+			starting_pos_main_gui=self.gui.outline.Position
+			starting_pos_settings_hub=self.settingshub.Position
 		else
 			drag=false
 		end
@@ -123,7 +127,9 @@ function module:SetupConnetions()
 
 	UserInputService.InputChanged:Connect(function(input)
 		if input.UserInputType==Enum.UserInputType.MouseMovement and drag then
-			self.gui.outline.Position=update_pos(UDim2.new(0,input.Position.X,0,input.Position.Y))
+			
+			self.gui.outline.Position=update_pos(UDim2.new(0,input.Position.X,0,input.Position.Y),starting_pos_main_gui)
+			self.settingshub.Position=update_pos(UDim2.new(0,input.Position.X,0,input.Position.Y),starting_pos_settings_hub)
 		else
 			lastMousePos=UDim2.new(0,Mouse.X,0,Mouse.Y)
 		end
