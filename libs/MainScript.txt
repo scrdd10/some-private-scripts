@@ -1,4 +1,5 @@
 if getgenv().regedit_loaded then return end
+getgenv().regedit_loaded=true
 --Critical things
 local gui=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/MainGui.txt"))()
 local gui_funcs=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/GuiFuncs.txt"))()
@@ -337,7 +338,7 @@ function ESP_disable(setting,storage)
 	storage.players_connection:Disconnect()
 	storage.players_connection=nil
 
-	for _,esp in storage.players_with_esp do
+	for _,esp:Frame in storage.players_with_esp do
 		esp:Destroy()
 	end
 	table.clear(storage.players_with_esp)
@@ -378,10 +379,114 @@ function Antiaim_update(setting,storage)
 	return
 end
 
+function Blink_enable(setting,storage)
+	local blinkpart:Part
+	local weld:Weld
+	
+	if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
+	local ExChar:Model?=Exploiter.Character
+	local ExRoot:BasePart?=ExChar.PrimaryPart
+	
+	storage.instances={}
+	local instances=storage.instances
+	
+	blinkpart=Instance.new("Part")
+	weld=Instance.new("WeldConstraint")
+
+	blinkpart.Parent=ExRoot
+	blinkpart.Position=ExRoot.Position
+	blinkpart.Size=Vector3.new(5,5,5)
+	blinkpart.Transparency=1
+	blinkpart.CanCollide=false
+	blinkpart.Name="BLINKDONOT"
+	
+	weld.Parent=blinkpart
+	weld.Part0=blinkpart
+	weld.Part1=ExRoot
+
+	for _,part:BasePart in ExChar:GetChildren() do
+		if part:IsA("BasePart") then
+			part.Massless=true
+		end
+	end
+	
+	instances[#instances+1]=weld
+	instances[#instances+1]=blinkpart
+	
+	if not setting.doll.value then return end
+	
+	local function createDoll()		
+		ExChar.Archivable=true
+		for _,part:BasePart in ExChar:GetDescendants() do
+			part.Archivable=true
+		end
+
+		local Doll:Model=ExChar:Clone()
+		
+		ExChar.Archivable=false
+		for _,part:BasePart in ExChar:GetDescendants() do
+			part.Archivable=false
+		end
+
+		for _,part:BasePart in Doll:GetChildren() do
+			if not part:IsA("BasePart") then
+				part:Destroy()
+				continue
+			end
+			
+			part.Anchored=true
+			part.Transparency=0.6
+			part.CanCollide=false
+			part.CanQuery=false
+			part.CanTouch=false
+
+			part.Color=Color3.fromRGB(255, 255, 255)
+			for _,v2 in part:GetChildren() do
+				if not v2:IsA("SpecialMesh") then
+					v2:Destroy()
+				end
+			end
+		end
+
+		Doll.Parent=workspace
+		Doll:PivotTo(ExRoot.CFrame)
+
+		return Doll
+	end
+	
+	local Doll=createDoll()
+	
+	storage.Doll=Doll
+end
+
+function Blink_disable(setting,storage)
+	local e=storage.Doll
+	if storage.Doll then
+		storage.Doll=nil
+		e:Destroy()
+	end
+	
+	for _,inst:Instance in storage.instances do
+		inst:Destroy()
+	end
+	
+	if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
+	for _,part:BasePart in Exploiter.Character:GetChildren() do
+		if part:IsA("BasePart") then
+			part.Massless=false
+		end
+	end
+end
+
+function Blink_update(setting,storage)
+	return
+end
+
 
 local c_gui=gui.new("regedit")
 local rage_category=c_gui:add_category("Rage","rbxassetid://12614416478")
 local visuals_category=c_gui:add_category("Visuals","rbxassetid://4674746809")
+local world_category=c_gui:add_category("World")
 
 esp_gui=c_gui.esp
 regedit=c_gui.gui
@@ -429,6 +534,14 @@ rage_category:add_func("Head scaler","left",HeadScaler_enable,HeadScaler_disable
 
 rage_category:add_func("Anti aim","left",Antiaim_enable,Antiaim_disable,Antiaim_update,{},"switch")
 
+rage_category:add_func("Blink","left",Blink_enable,Blink_disable,Blink_update,{
+	["doll"]={
+		["name"]="Create doll",
+		["value"]=true,
+		["type"]="switch",
+	},
+},"switch")
+
 visuals_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
 	["team_check"]={
 		["name"]="Team check",
@@ -469,5 +582,3 @@ task.spawn(function()
 		ContextActionService:UnbindAction("RbxCameraKeypress")
 	end
 end)
-
-getgenv().regedit_loaded=true
