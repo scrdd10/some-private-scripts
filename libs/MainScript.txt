@@ -111,9 +111,13 @@ function HeadScaler_enable(setting,storage)
 	local scaled=storage.scaled_players
 	local connections=storage.connections_players
 
-	local function scale(Player)
+	local function scale(Player: Player)
 		local default_value={}
-		if not Player.Character or not Player.Character.PrimaryPart or not Player.Character:FindFirstChild("Head") then
+		if not Player.Character or
+			not Player.Character.PrimaryPart or
+			not Player.Character:FindFirstChild("Head") or 
+			(Player.Team==Exploiter.Team and setting["team_check"].value) then
+			
 			return
 		end
 
@@ -377,7 +381,7 @@ end
 
 local c_gui=gui.new("regedit")
 local rage_category=c_gui:add_category("Rage","rbxassetid://12614416478")
-local misc_category=c_gui:add_category("Visuals","rbxassetid://4674746809")
+local visuals_category=c_gui:add_category("Visuals","rbxassetid://4674746809")
 
 esp_gui=c_gui.esp
 regedit=c_gui.gui
@@ -415,12 +419,17 @@ rage_category:add_func("Head scaler","left",HeadScaler_enable,HeadScaler_disable
 		["name"]="Head transparency",
 		["value"]=false,
 		["type"]="switch"
+	},
+	["team_check"]={
+		["name"]="Team check",
+		["value"]=false,
+		["type"]="switch"
 	}
 },"switch")
 
 rage_category:add_func("Anti aim","left",Antiaim_enable,Antiaim_disable,Antiaim_update,{},"switch")
 
-misc_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
+visuals_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
 	["team_check"]={
 		["name"]="Team check",
 		["value"]=false,
@@ -456,7 +465,7 @@ Exploiter.OnTeleport:Connect(function()
 end)
 
 task.spawn(function()
-	while task.wait(1) do
+	while task.wait(.5) do
 		ContextActionService:UnbindAction("RbxCameraKeypress")
 	end
 end)
