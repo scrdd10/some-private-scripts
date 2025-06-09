@@ -4,7 +4,7 @@ function module.createStartGui(name: string?)
 	local G2L = {};
 
 	-- StarterGui.regedit
-	G2L["1"] = Instance.new("ScreenGui", gethui());
+	G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
 	G2L["1"]["IgnoreGuiInset"] = true;
 	G2L["1"]["DisplayOrder"] = 100;
 	G2L["1"]["ScreenInsets"] = Enum.ScreenInsets.DeviceSafeInsets;
@@ -627,12 +627,12 @@ function module.createStartGui(name: string?)
 	G2L["3b"]["Color"] = Color3.fromRGB(255, 255, 255);
 	
 	-- StarterGui.ESP
-	G2L["osob"] = Instance.new("ScreenGui", gethui());
+	G2L["osob"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
 	G2L["osob"]["Name"] = [[ESP]];
 	G2L["osob"]["DisplayOrder"]=99
 	G2L["osob"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 	
-	return G2L["1"],G2L["osob"]
+	return G2L["1"],G2L["osob"],G2L["2e"] --main gui, esp, settings hub
 end
 
 return module
