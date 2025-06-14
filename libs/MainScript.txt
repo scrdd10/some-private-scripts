@@ -517,7 +517,7 @@ function ClickTP_enable(setting,storage)
 		end
 	end
 	
-	Exploiter.Character:PivotTo(selected_char.PrimaryPart.CFrame*CFrame.new(0,0,-5))
+	Exploiter.Character:PivotTo(selected_char.PrimaryPart.CFrame*CFrame.new(0,0,5))
 end
 
 function ClickTP_disable(setting,storage)
