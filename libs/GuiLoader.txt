@@ -1,10 +1,10 @@
 local module = {}
 
-function module.createStartGui(name: string?)
+function module.createStartGui(name: string)
 	local G2L = {};
 
 	-- StarterGui.regedit
-	G2L["1"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+	G2L["1"] = Instance.new("ScreenGui", gethui());
 	G2L["1"]["IgnoreGuiInset"] = true;
 	G2L["1"]["DisplayOrder"] = 100;
 	G2L["1"]["ScreenInsets"] = Enum.ScreenInsets.DeviceSafeInsets;
@@ -174,7 +174,7 @@ function module.createStartGui(name: string?)
 	-- StarterGui.regedit.outline.outline.outline.main.left.cat_example.List.button_switch.switch
 	G2L["f"] = Instance.new("Frame", G2L["d"]);
 	G2L["f"]["BorderSizePixel"] = 0;
-	G2L["f"]["BackgroundColor3"] = Color3.fromRGB(8, 60, 61);
+	G2L["f"]["BackgroundColor3"] = Color3.fromRGB(9, 61, 62);
 	G2L["f"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
 	G2L["f"]["Size"] = UDim2.new(0.1, 0, 0.6, 0);
 	G2L["f"]["Position"] = UDim2.new(0.895, 0, 0.5, 0);
@@ -252,7 +252,7 @@ function module.createStartGui(name: string?)
 	-- StarterGui.regedit.outline.outline.outline.main.left.cat_example.List.button_execute.execute
 	G2L["17"] = Instance.new("Frame", G2L["15"]);
 	G2L["17"]["BorderSizePixel"] = 0;
-	G2L["17"]["BackgroundColor3"] = Color3.fromRGB(8, 60, 61);
+	G2L["17"]["BackgroundColor3"] = Color3.fromRGB(9, 61, 62);
 	G2L["17"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
 	G2L["17"]["Size"] = UDim2.new(0.1, 0, 0.6, 0);
 	G2L["17"]["Position"] = UDim2.new(0.895, 0, 0.5, 0);
@@ -566,7 +566,7 @@ function module.createStartGui(name: string?)
 	G2L["34"] = Instance.new("Frame", G2L["30"]);
 	G2L["34"]["Visible"] = false;
 	G2L["34"]["BorderSizePixel"] = 0;
-	G2L["34"]["BackgroundColor3"] = Color3.fromRGB(8, 60, 61);
+	G2L["34"]["BackgroundColor3"] = Color3.fromRGB(9, 61, 62);
 	G2L["34"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
 	G2L["34"]["Size"] = UDim2.new(0.15, 0, 0.6, 0);
 	G2L["34"]["Position"] = UDim2.new(0.94, 0, 0.5, 0);
@@ -625,14 +625,39 @@ function module.createStartGui(name: string?)
 	G2L["3b"] = Instance.new("UIStroke", G2L["39"]);
 	G2L["3b"]["Thickness"] = 1.5;
 	G2L["3b"]["Color"] = Color3.fromRGB(255, 255, 255);
+
+
+	-- StarterGui.regedit.TPfov
+	G2L["3c"] = Instance.new("Frame", G2L["1"]);
+	G2L["3c"]["Visible"] = false;
+	G2L["3c"]["ZIndex"] = 0;
+	G2L["3c"]["BorderSizePixel"] = 0;
+	G2L["3c"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["3c"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	G2L["3c"]["Size"] = UDim2.new(0, 400, 0, 400);
+	G2L["3c"]["Position"] = UDim2.new(0.5, 0, 0.5, 0);
+	G2L["3c"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["3c"]["Name"] = [[TPfov]];
+	G2L["3c"]["BackgroundTransparency"] = 1;
+
+
+	-- StarterGui.regedit.TPfov.UICorner
+	G2L["3d"] = Instance.new("UICorner", G2L["3c"]);
+	G2L["3d"]["CornerRadius"] = UDim.new(1, 0);
+
+
+	-- StarterGui.regedit.TPfov.UIStroke
+	G2L["3e"] = Instance.new("UIStroke", G2L["3c"]);
+	G2L["3e"]["Thickness"] = 1.5;
+	G2L["3e"]["Color"] = Color3.fromRGB(0, 255, 0);
 	
 	-- StarterGui.ESP
-	G2L["osob"] = Instance.new("ScreenGui", game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui"));
+	G2L["osob"] = Instance.new("ScreenGui", gethui());
 	G2L["osob"]["Name"] = [[ESP]];
 	G2L["osob"]["DisplayOrder"]=99
 	G2L["osob"]["ZIndexBehavior"] = Enum.ZIndexBehavior.Sibling;
 	
-	return G2L["1"],G2L["osob"],G2L["2e"] --main gui, esp, settings hub
+	return G2L["1"],G2L["osob"] --main gui, esp
 end
 
 return module
