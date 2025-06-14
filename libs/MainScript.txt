@@ -491,7 +491,7 @@ function ClickTP_enable(setting,storage)
 	local possible_targets={}
 	
 	for _,Player:Player in Players:GetPlayers() do
-		if Player==Exploiter or (Player.Team==Exploiter.Team and setting["team_check"].value) then continue end
+		if Player==Exploiter then continue end
 
 		local Player_character:Model=Player.Character
 		if not Player_character or not Player_character.PrimaryPart then continue end
@@ -650,4 +650,3 @@ task.spawn(function()
 		ContextActionService:UnbindAction("RbxCameraKeypress")
 	end
 end)
-
