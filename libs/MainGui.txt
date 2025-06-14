@@ -22,7 +22,7 @@ function module.new(nametag: string)
 	
 	self.gui=maingui
 	self.esp=esp
-	self.settingshub=settingshub
+	self.settingshub=maingui.settingshub
 
 	self:SetupConnetions()
 
