@@ -9,6 +9,8 @@ local TweenService=game:GetService("TweenService")
 local Exploiter=Players.LocalPlayer
 local Mouse=Exploiter:GetMouse()
 
+local storage={}
+
 local module={}
 module.__index=module
 
@@ -23,6 +25,7 @@ function module.new(nametag: string)
 	self.gui=maingui
 	self.esp=esp
 	self.settingshub=maingui.settingshub
+	self.ModalModify=maingui.ModalFrame.modify
 
 	self:SetupConnetions()
 
@@ -48,11 +51,24 @@ function module:HideMenu()
 	TweenService:Create(self.gui.outline.UIScale,TweenInfo.new(.4,Enum.EasingStyle.Cubic),{Scale=0}):Play()
 	TweenService:Create(self.gui.outline,TweenInfo.new(.15,Enum.EasingStyle.Sine),{GroupTransparency=1}):Play()
 	task.wait(.4)
+	
 	self.open=false
+	self.ModalModify.Modal=false
+	
+	UserInputService.MouseIcon=storage.DefaultMouseIcon
+	UserInputService.MouseIconEnabled=storage.DefaultMouseState
 end
 
 function module:ShowMenu()
 	self.open=true
+	self.ModalModify.Modal=true
+	
+	storage.DefaultMouseIcon=UserInputService.MouseIcon
+	storage.DefaultMouseState=UserInputService.MouseIconEnabled
+	
+	UserInputService.MouseIcon=""
+	UserInputService.MouseIconEnabled=true
+	
 	TweenService:Create(self.gui.outline.UIScale,TweenInfo.new(.4,Enum.EasingStyle.Cubic),{Scale=1}):Play()
 	task.wait(.1)
 	TweenService:Create(self.gui.outline,TweenInfo.new(.15,Enum.EasingStyle.Sine),{GroupTransparency=0}):Play()
