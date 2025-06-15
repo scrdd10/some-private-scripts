@@ -66,7 +66,8 @@ function module:ShowMenu()
 	storage.DefaultMouseIcon=UserInputService.MouseIcon
 	storage.DefaultMouseState=UserInputService.MouseIconEnabled
 	
-	UserInputService.MouseIcon=""
+	UserInputService.MouseIcon="rbxasset://SystemCursors/Arrow"
+	Mouse.Icon="rbxasset://SystemCursors/Arrow"
 	UserInputService.MouseIconEnabled=true
 	
 	TweenService:Create(self.gui.outline.UIScale,TweenInfo.new(.4,Enum.EasingStyle.Cubic),{Scale=1}):Play()
