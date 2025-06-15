@@ -668,8 +668,132 @@ function module.createStartGui(name: string)
 	G2L["40"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
 	G2L["40"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
 	G2L["40"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["40"]["Text"] = [[]];
 	G2L["40"]["Name"] = [[modify]];
-	G2L["40"]["Text"] = "";
+
+
+	-- StarterGui.regedit.Hotkeys
+	G2L["41"] = Instance.new("Frame", G2L["1"]);
+	G2L["41"]["Visible"] = false;
+	G2L["41"]["Interactable"] = false;
+	G2L["41"]["BorderSizePixel"] = 0;
+	G2L["41"]["BackgroundColor3"] = Color3.fromRGB(35, 122, 153);
+	G2L["41"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	G2L["41"]["Size"] = UDim2.new(0.055, 0, 0.022, 0);
+	G2L["41"]["Position"] = UDim2.new(0.042, 0, 0.418, 0);
+	G2L["41"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["41"]["Name"] = [[Hotkeys]];
+	G2L["41"]["BackgroundTransparency"] = 0.2;
+
+
+	-- StarterGui.regedit.Hotkeys.outline
+	G2L["42"] = Instance.new("Frame", G2L["41"]);
+	G2L["42"]["BorderSizePixel"] = 0;
+	G2L["42"]["BackgroundColor3"] = Color3.fromRGB(95, 95, 95);
+	G2L["42"]["Size"] = UDim2.new(1, 0, 1, 0);
+	G2L["42"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["42"]["Name"] = [[outline]];
+	G2L["42"]["BackgroundTransparency"] = 0.8;
+
+
+	-- StarterGui.regedit.Hotkeys.outline.nameing
+	G2L["43"] = Instance.new("TextLabel", G2L["42"]);
+	G2L["43"]["TextWrapped"] = true;
+	G2L["43"]["BorderSizePixel"] = 0;
+	G2L["43"]["TextSize"] = 14;
+	G2L["43"]["TextXAlignment"] = Enum.TextXAlignment.Left;
+	G2L["43"]["TextScaled"] = true;
+	G2L["43"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["43"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+	G2L["43"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["43"]["BackgroundTransparency"] = 1;
+	G2L["43"]["AnchorPoint"] = Vector2.new(0, 0.5);
+	G2L["43"]["Size"] = UDim2.new(0.7, 0, 0.8, 0);
+	G2L["43"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["43"]["Text"] = [[Hotkeys]];
+	G2L["43"]["Name"] = [[nameing]];
+	G2L["43"]["Position"] = UDim2.new(0.3, 0, 0.5, 0);
+
+
+	-- StarterGui.regedit.Hotkeys.outline.logo
+	G2L["44"] = Instance.new("ImageLabel", G2L["42"]);
+	G2L["44"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
+	G2L["44"]["BorderSizePixel"] = 0;
+	G2L["44"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	-- [ERROR] cannot convert ImageContent, please report to "https://github.com/uniquadev/GuiToLuaConverter/issues"
+	G2L["44"]["AnchorPoint"] = Vector2.new(0.5, 0.5);
+	G2L["44"]["Image"] = [[rbxassetid://125858433387092]];
+	G2L["44"]["Size"] = UDim2.new(0.8, 0, 0.8, 0);
+	G2L["44"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["44"]["BackgroundTransparency"] = 1;
+	G2L["44"]["Name"] = [[logo]];
+	G2L["44"]["Position"] = UDim2.new(0.15, 0, 0.5, 0);
+
+
+	-- StarterGui.regedit.Hotkeys.childs
+	G2L["45"] = Instance.new("Frame", G2L["41"]);
+	G2L["45"]["Interactable"] = false;
+	G2L["45"]["BorderSizePixel"] = 0;
+	G2L["45"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["45"]["Size"] = UDim2.new(1, 0, 1, 0);
+	G2L["45"]["Position"] = UDim2.new(0, 0, 1.2, 0);
+	G2L["45"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["45"]["Name"] = [[childs]];
+	G2L["45"]["BackgroundTransparency"] = 1;
+
+
+	-- StarterGui.regedit.Hotkeys.childs.UIListLayout
+	G2L["46"] = Instance.new("UIListLayout", G2L["45"]);
+	G2L["46"]["Padding"] = UDim.new(0.3, 0);
+	G2L["46"]["SortOrder"] = Enum.SortOrder.LayoutOrder;
+
+
+	-- StarterGui.regedit.Hotkeys.childs.example_key
+	G2L["47"] = Instance.new("Frame", G2L["45"]);
+	G2L["47"]["Visible"] = false;
+	G2L["47"]["Interactable"] = false;
+	G2L["47"]["BorderSizePixel"] = 0;
+	G2L["47"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["47"]["Size"] = UDim2.new(4, 0, 0.8, 0);
+	G2L["47"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["47"]["Name"] = [[example_key]];
+	G2L["47"]["BackgroundTransparency"] = 1;
+
+
+	-- StarterGui.regedit.Hotkeys.childs.example_key.name
+	G2L["48"] = Instance.new("TextLabel", G2L["47"]);
+	G2L["48"]["TextWrapped"] = true;
+	G2L["48"]["BorderSizePixel"] = 0;
+	G2L["48"]["TextSize"] = 14;
+	G2L["48"]["TextScaled"] = true;
+	G2L["48"]["BackgroundColor3"] = Color3.fromRGB(35, 122, 153);
+	G2L["48"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+	G2L["48"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["48"]["BackgroundTransparency"] = 0.3;
+	G2L["48"]["AnchorPoint"] = Vector2.new(0, 0.5);
+	G2L["48"]["Size"] = UDim2.new(1, 0, 0.9, 0);
+	G2L["48"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["48"]["Name"] = [[name]];
+	G2L["48"]["Position"] = UDim2.new(0, 0, 0.5, 0);
+
+
+	-- StarterGui.regedit.Hotkeys.childs.example_key.bind
+	G2L["49"] = Instance.new("TextLabel", G2L["47"]);
+	G2L["49"]["TextWrapped"] = true;
+	G2L["49"]["SizeConstraint"] = Enum.SizeConstraint.RelativeYY;
+	G2L["49"]["BorderSizePixel"] = 0;
+	G2L["49"]["TextSize"] = 14;
+	G2L["49"]["TextScaled"] = true;
+	G2L["49"]["BackgroundColor3"] = Color3.fromRGB(35, 122, 153);
+	G2L["49"]["FontFace"] = Font.new([[rbxasset://fonts/families/GothamSSm.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+	G2L["49"]["TextColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["49"]["BackgroundTransparency"] = 0.3;
+	G2L["49"]["AnchorPoint"] = Vector2.new(0, 0.5);
+	G2L["49"]["Size"] = UDim2.new(1, 0, 0.9, 0);
+	G2L["49"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["49"]["Text"] = [[H]];
+	G2L["49"]["Name"] = [[bind]];
+	G2L["49"]["Position"] = UDim2.new(0, 0, 0.5, 0);
 	
 	-- StarterGui.ESP
 	G2L["osob"] = Instance.new("ScreenGui", gethui());
