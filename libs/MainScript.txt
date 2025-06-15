@@ -607,7 +607,7 @@ rage_category:add_func("Blink","left",Blink_enable,Blink_disable,Blink_update,{
 	},
 },"switch")
 
-rage_category:add_func("FOV TP","left",FOVTP_enable,FOVTP_update,FOVTP_disable,{
+rage_category:add_func("FOV TP","left",FOVTP_enable,FOVTP_disable,FOVTP_update,{
 	["fov"]={
 		["name"]="TP FOV",
 		["value"]=200,
