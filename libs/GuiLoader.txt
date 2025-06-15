@@ -650,6 +650,26 @@ function module.createStartGui(name: string)
 	G2L["3e"] = Instance.new("UIStroke", G2L["3c"]);
 	G2L["3e"]["Thickness"] = 1.5;
 	G2L["3e"]["Color"] = Color3.fromRGB(0, 255, 0);
+
+
+	-- StarterGui.regedit.ModalFrame
+	G2L["3f"] = Instance.new("Frame", G2L["1"]);
+	G2L["3f"]["BorderSizePixel"] = 0;
+	G2L["3f"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["3f"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["3f"]["Name"] = [[ModalFrame]];
+
+
+	-- StarterGui.regedit.ModalFrame.modify
+	G2L["40"] = Instance.new("TextButton", G2L["3f"]);
+	G2L["40"]["BorderSizePixel"] = 0;
+	G2L["40"]["TextSize"] = 14;
+	G2L["40"]["TextColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["40"]["BackgroundColor3"] = Color3.fromRGB(255, 255, 255);
+	G2L["40"]["FontFace"] = Font.new([[rbxasset://fonts/families/SourceSansPro.json]], Enum.FontWeight.Regular, Enum.FontStyle.Normal);
+	G2L["40"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
+	G2L["40"]["Name"] = [[modify]];
+	G2L["40"]["Text"] = "";
 	
 	-- StarterGui.ESP
 	G2L["osob"] = Instance.new("ScreenGui", gethui());
