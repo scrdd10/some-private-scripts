@@ -593,7 +593,8 @@ function Ragebot_enable(setting,storage)
 			local RememberCameraCF=Camera.CFrame
 			Camera.CFrame=Exploiter.Character.Head.CFrame
 			Camera.CFrame=CFrame.new(Camera.CFrame.Position,minimum_target.Position)
-			
+
+			print("shoot")
 			mouse1click()
 			
 			Camera.CFrame=RememberCameraCF
