@@ -55,9 +55,9 @@ function module:HideMenu()
 	self.open=false
 	self.ModalModify.Modal=false
 	
-	UserInputService.MouseIcon=storage.DefaultMouseIcon or ""
-	Mouse.Icon=storage.DefaultMouseIcon or ""
-	UserInputService.MouseIconEnabled=storage.DefaultMouseState or true
+	UserInputService.MouseIcon=storage.DefaultMouseIcon
+	Mouse.Icon=storage.DefaultMouseIcon
+	UserInputService.MouseIconEnabled=storage.DefaultMouseState
 end
 
 function module:ShowMenu()
