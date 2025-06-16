@@ -22,6 +22,7 @@ function module.createStartGui(name: string)
 	G2L["2"]["BorderColor3"] = Color3.fromRGB(0, 0, 0);
 	G2L["2"]["Name"] = [[outline]];
 	G2L["2"]["BackgroundTransparency"] = 1;
+	G2L["2"]["GroupTransparency"] = 1;
 
 
 	-- StarterGui.regedit.outline.outline
@@ -481,8 +482,7 @@ function module.createStartGui(name: string)
 
 	-- StarterGui.regedit.outline.UIScale
 	G2L["2d"] = Instance.new("UIScale", G2L["2"]);
-
-
+	G2L["2d"]["Scale"] = 0;
 
 	-- StarterGui.regedit.settingshub
 	G2L["2e"] = Instance.new("Frame", G2L["1"]);
