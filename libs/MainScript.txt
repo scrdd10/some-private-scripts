@@ -62,7 +62,7 @@ function Aimbot_enable(setting,storage)
 			end
 		end
 
-		local min:number=2^1024
+		local min:number=math.huge
 		local selected_char:Model
 		for char:Model,distance:number in possible_targets do
 			if distance<min then
@@ -508,7 +508,7 @@ function FOVTP_enable(setting,storage)
 		end
 	end
 
-	local min:number=2^1024
+	local min:number=math.huge
 	local selected_char:Model
 	for char:Model,distance:number in possible_targets do
 		if distance<min then
@@ -535,23 +535,90 @@ function FOVTP_update(setting,storage)
 end
 
 function Ragebot_enable(setting,storage)
+	local Reload_time=setting.reload.value
+	local Reload=false
 	
+	RunService:BindToRenderStep("Ragebot",Enum.RenderPriority.First.Value+3,function()
+		if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
+		
+		local raycast_params=RaycastParams.new()
+		raycast_params.FilterType=Enum.RaycastFilterType.Exclude
+		raycast_params.FilterDescendantsInstances={Exploiter.Character}
+		
+		local Possible_targets={}
+		
+		for _,Player:Player in Players:GetPlayers() do
+			if not Player.Character or not Player.Character.PrimaryPart or
+				(Player.Team==Exploiter.Team and setting["team_check"].value) or Player==Exploiter
+			then continue end
+			
+			local AimPart:Model=Player.Character
+			if AimPart:FindFirstChild("Head") then
+				AimPart=AimPart.Head::BasePart
+			else
+				AimPart=AimPart.PrimaryPart::BasePart
+			end
+			
+			local Direction:Vector3=CFrame.new(Exploiter.Character.PrimaryPart.Position,AimPart.Position).LookVector
+			local Distance:number=(AimPart.Position-Exploiter.Character.PrimaryPart.Position).Magnitude
+			Distance=math.clamp(Distance,1,400)
+			
+			local result_ray=workspace:Raycast(Exploiter.Character.PrimaryPart.Position,Direction*Distance*1.1,raycast_params)
+			
+			if result_ray and result_ray.Instance then
+				if not result_ray.Instance:IsDescendantOf(Player.Character) then continue end
+				
+				Possible_targets[#Possible_targets+1]={AimPart,Distance}
+			end
+		end
+		
+		if #Possible_targets<1 then return end
+		
+		local minimum_distance:number=math.huge
+		local minimum_target:BasePart
+		
+		for _,t:{} in Possible_targets do
+			local distance=t[2]
+			if distance<minimum_distance then
+				minimum_target=t[1]
+				minimum_distance=distance
+			end
+		end
+		
+		if not minimum_target then return end
+		
+		if not Reload then
+			Reload=true
+			
+			local RememberCameraCF=Camera.CFrame
+			Camera.CFrame=Exploiter.Character.Head.CFrame
+			Camera.CFrame=CFrame.new(Camera.CFrame.Position,minimum_target.Position)
+			
+			mouse1click()
+			
+			Camera.CFrame=RememberCameraCF
+			
+			task.delay(Reload_time/1000,function()
+				Reload=false
+			end)
+		end
+	end)
 end
 
 function Ragebot_disable(setting,storage)
-	
+	RunService:UnbindFromRenderStep("Ragebot")
 end
 
 function Ragebot_update(setting,storage)
-	
+	return
 end
+
 
 local c_gui=gui.new("regedit")
 local rage_category=c_gui:add_category("Rage","rbxassetid://12614416478")
 local visuals_category=c_gui:add_category("Visuals","rbxassetid://4674746809")
 local world_category=c_gui:add_category("World","rbxassetid://115986292591138")
 local experimental_category=c_gui:add_category("Experimental","rbxassetid://13947091127")
-
 
 esp_gui=c_gui.esp
 regedit=c_gui.gui
@@ -571,7 +638,7 @@ rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,Aimbot_updat
 		["name"]="Team check",
 		["value"]=false,
 		["type"]="switch",
-	}
+	},
 },"switch")
 
 rage_category:add_func("Head scaler","left",HeadScaler_enable,HeadScaler_disable,HeadScaler_update,{
@@ -658,7 +725,12 @@ experimental_category:add_func("Ragebot (May not work)","left",Ragebot_enable,Ra
 		["name"]="Team check",
 		["value"]=false,
 		["type"]="switch",
-	}
+	},
+	["reload"]={
+		["name"]="Reload time (ms)",
+		["value"]=1000,
+		["type"]="number",
+	},
 },"switch")
 
 local On_teleport_already=false
@@ -667,3 +739,6 @@ Exploiter.OnTeleport:Connect(function()
 		queue_on_teleport("loadstring(game:HttpGet('https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/MainScript.txt'))()")
 	end
 end)
+
+task.wait(2)
+c_gui:ShowMenu()
