@@ -1,5 +1,8 @@
 if getgenv().regedit_loaded then return end
 getgenv().regedit_loaded=true
+--Critical things
+local gui=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/MainGui.txt"))()
+local gui_funcs=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/GuiFuncs.txt"))()
 --Services
 local Players=game:GetService("Players")
 local RunService=game:GetService("RunService")
