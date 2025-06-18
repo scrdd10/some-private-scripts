@@ -1,8 +1,5 @@
 if getgenv().regedit_loaded then return end
 getgenv().regedit_loaded=true
---Critical things
-local gui=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/MainGui.txt"))()
-local gui_funcs=loadstring(game:HttpGet("https://raw.githubusercontent.com/scrdd10/some-private-scripts/refs/heads/main/libs/GuiFuncs.txt"))()
 --Services
 local Players=game:GetService("Players")
 local RunService=game:GetService("RunService")
@@ -19,7 +16,7 @@ local draw_esp_box=gui_funcs.draw_esp_box
 
 local rand=math.random
 --Funcs
-local function Lock_property(ints: Instance, propetry: string, set_to): RBXScriptConnection
+local function Lock_property(ints: Instance, propetry: string, set_to: any): RBXScriptConnection
 	local con
 
 	con=ints:GetPropertyChangedSignal(propetry):Connect(function()
@@ -30,6 +27,7 @@ local function Lock_property(ints: Instance, propetry: string, set_to): RBXScrip
 	ints[propetry]=set_to
 	return con
 end
+
 --Code
 function Aimbot_enable(setting,storage)
 	local dot_to_count:Vector2=Vector2.new(Camera.ViewportSize.X/2,Camera.ViewportSize.Y/2)
@@ -45,7 +43,7 @@ function Aimbot_enable(setting,storage)
 		local possible_targets={}
 
 		for _,Player:Player in Players:GetPlayers() do
-			if Player==Exploiter or (Player.Team==Exploiter.Team and setting["team_check"].value) then continue end
+			if Player==Exploiter or (Player.Team==Exploiter.Team and setting.team_check.value) then continue end
 
 			local Player_character:Model=Player.Character
 			if not Player_character or not Player_character.PrimaryPart then continue end
@@ -97,7 +95,7 @@ function Aimbot_update(setting,storage)
 	end
 	regedit.Aimfov.Visible=setting.fovrender.value
 
-	if setting["team_check"].value then
+	if setting.team_check.value then
 		storage.locked_person=nil
 	end
 end
@@ -117,8 +115,8 @@ function HeadScaler_enable(setting,storage)
 		if not Player.Character or
 			not Player.Character.PrimaryPart or
 			not Player.Character:FindFirstChild("Head") or 
-			(Player.Team==Exploiter.Team and setting["team_check"].value) then
-			
+			(Player.Team==Exploiter.Team and setting.team_check.value) then
+
 			return
 		end
 
@@ -158,7 +156,6 @@ function HeadScaler_enable(setting,storage)
 			local size:number=setting.size.value
 
 			default_value[Head]={Head.Size, Head.Transparency}
-
 
 			editing_lock[Player]={
 				Lock_property(Head,"Size",Vector3.new(size,size,size)),
@@ -201,8 +198,6 @@ function HeadScaler_enable(setting,storage)
 		end)
 		connections[#connections+1]=con
 	end)
-
-
 end
 
 function HeadScaler_disable(setting,storage)
@@ -313,7 +308,7 @@ function ESP_enable(setting,storage)
 			esp.name.UIScale.Scale=Distance/35
 			esp.distance.UIScale.Scale=Distance/35
 
-			if #Teams:GetChildren()<1 or not setting["team_check"].value then
+			if #Teams:GetChildren()<1 or not setting.team_check.value then
 				if esp.UIStroke.Color~=Color3.fromRGB(0, 255, 0) then
 					esp.UIStroke.Color=Color3.fromRGB(0, 255, 0)
 				end
@@ -363,7 +358,9 @@ function Antiaim_enable(setting,storage)
 		local Exploiter_primarypart:BasePart=Exploiter.Character.PrimaryPart
 		Exploiter_primarypart.CFrame=CFrame.new(
 			Exploiter_primarypart.CFrame.Position,
-			Vector3.new(rand(-100,100),Exploiter_primarypart.CFrame.Position.Y,rand(-100,100))
+			Vector3.new(rand(-100,100)+Exploiter_primarypart.CFrame.Position.X,
+				Exploiter_primarypart.CFrame.Position.Y,
+				rand(-100,100))+Exploiter_primarypart.CFrame.Position.Z
 		)
 	end)
 end
@@ -382,14 +379,14 @@ end
 function Blink_enable(setting,storage)
 	local blinkpart:Part
 	local weld:Weld
-	
+
 	if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
 	local ExChar:Model=Exploiter.Character
 	local ExRoot:BasePart=ExChar.PrimaryPart
-	
+
 	storage.instances={}
 	local instances=storage.instances
-	
+
 	blinkpart=Instance.new("Part")
 	weld=Instance.new("WeldConstraint")
 
@@ -399,7 +396,7 @@ function Blink_enable(setting,storage)
 	blinkpart.Transparency=1
 	blinkpart.CanCollide=false
 	blinkpart.Name="BLINKDONOT"
-	
+
 	weld.Parent=blinkpart
 	weld.Part0=blinkpart
 	weld.Part1=ExRoot
@@ -409,12 +406,12 @@ function Blink_enable(setting,storage)
 			part.Massless=true
 		end
 	end
-	
+
 	instances[#instances+1]=weld
 	instances[#instances+1]=blinkpart
-	
+
 	if not setting.doll.value then return end
-	
+
 	local function createDoll()		
 		ExChar.Archivable=true
 		for _,part:BasePart in ExChar:GetDescendants() do
@@ -422,7 +419,7 @@ function Blink_enable(setting,storage)
 		end
 
 		local Doll:Model=ExChar:Clone()
-		
+
 		ExChar.Archivable=false
 		for _,part:BasePart in ExChar:GetDescendants() do
 			part.Archivable=false
@@ -433,7 +430,7 @@ function Blink_enable(setting,storage)
 				part:Destroy()
 				continue
 			end
-			
+
 			part.Anchored=true
 			part.Transparency=0.6
 			part.CanCollide=false
@@ -453,9 +450,9 @@ function Blink_enable(setting,storage)
 
 		return Doll
 	end
-	
+
 	local Doll=createDoll()
-	
+
 	storage.Doll=Doll
 end
 
@@ -465,11 +462,11 @@ function Blink_disable(setting,storage)
 		storage.Doll=nil
 		e:Destroy()
 	end
-	
+
 	for _,inst:Instance in storage.instances do
 		inst:Destroy()
 	end
-	
+
 	if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
 	for _,part:BasePart in Exploiter.Character:GetChildren() do
 		if part:IsA("BasePart") then
@@ -485,11 +482,11 @@ end
 function FOVTP_enable(setting,storage)
 	local dot_to_count:Vector2=Vector2.new(Camera.ViewportSize.X/2,Camera.ViewportSize.Y/2)
 	local fov:number=setting.fov.value
-	
+
 	if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
-	
+
 	local possible_targets={}
-	
+
 	for _,Player:Player in Players:GetPlayers() do
 		if Player==Exploiter then continue end
 
@@ -511,12 +508,12 @@ function FOVTP_enable(setting,storage)
 	local min:number=math.huge
 	local selected_char:Model
 	for char:Model,distance:number in possible_targets do
-		if distance<min then
+		if distance<min and distance<=setting.distance.value then
 			min=distance
 			selected_char=char
 		end
 	end
-	
+
 	if not selected_char then return end
 	Exploiter.Character:PivotTo(selected_char.PrimaryPart.CFrame*CFrame.new(0,0,5))
 end
@@ -537,46 +534,46 @@ end
 function Ragebot_enable(setting,storage)
 	local Reload_time=setting.reload.value
 	local Reload=false
-	
+
 	RunService:BindToRenderStep("Ragebot",Enum.RenderPriority.First.Value+3,function()
 		if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
-		
+
 		local raycast_params=RaycastParams.new()
 		raycast_params.FilterType=Enum.RaycastFilterType.Exclude
 		raycast_params.FilterDescendantsInstances={Exploiter.Character}
-		
+
 		local Possible_targets={}
-		
+
 		for _,Player:Player in Players:GetPlayers() do
 			if not Player.Character or not Player.Character.PrimaryPart or
-				(Player.Team==Exploiter.Team and setting["team_check"].value) or Player==Exploiter
+				(Player.Team==Exploiter.Team and setting.team_check.value) or Player==Exploiter
 			then continue end
-			
+
 			local AimPart:Model=Player.Character
 			if AimPart:FindFirstChild("Head") then
 				AimPart=AimPart.Head::BasePart
 			else
 				AimPart=AimPart.PrimaryPart::BasePart
 			end
-			
+
 			local Direction:Vector3=CFrame.new(Exploiter.Character.PrimaryPart.Position,AimPart.Position).LookVector
 			local Distance:number=(AimPart.Position-Exploiter.Character.PrimaryPart.Position).Magnitude
 			Distance=math.clamp(Distance,1,400)
-			
+
 			local result_ray=workspace:Raycast(Exploiter.Character.PrimaryPart.Position,Direction*Distance*1.1,raycast_params)
-			
+
 			if result_ray and result_ray.Instance then
 				if not result_ray.Instance:IsDescendantOf(Player.Character) then continue end
-				
+
 				Possible_targets[#Possible_targets+1]={AimPart,Distance}
 			end
 		end
-		
+
 		if #Possible_targets<1 then return end
-		
+
 		local minimum_distance:number=math.huge
 		local minimum_target:BasePart
-		
+
 		for _,t:{} in Possible_targets do
 			local distance=t[2]
 			if distance<minimum_distance then
@@ -584,21 +581,20 @@ function Ragebot_enable(setting,storage)
 				minimum_distance=distance
 			end
 		end
-		
+
 		if not minimum_target then return end
-		
+
 		if not Reload then
 			Reload=true
-			
+
 			local RememberCameraCF=Camera.CFrame
 			Camera.CFrame=Exploiter.Character.Head.CFrame
 			Camera.CFrame=CFrame.new(Camera.CFrame.Position,minimum_target.Position)
 
-			print("shoot")
 			mouse1click()
-			
+
 			Camera.CFrame=RememberCameraCF
-			
+
 			task.delay(Reload_time/1000,function()
 				Reload=false
 			end)
@@ -614,6 +610,109 @@ function Ragebot_update(setting,storage)
 	return
 end
 
+function Speedhack_enable(setting,storage)
+	storage.state=false
+	
+	storage.editing_lock={}
+	storage.default_settings={}
+	
+	local editing_lock=storage.editing_lock
+	local default_settings=storage.default_settings
+
+	if not Exploiter.Character or not Exploiter.Character.PrimaryPart or not Exploiter.Character:FindFirstChild("Humanoid") then return end
+	if not setting.speed.value or setting.speed.value<0 then return end
+	
+	storage.state=true
+	
+	local Character:Model=Exploiter.Character
+	
+	default_settings[Exploiter]={
+		Character.Humanoid.WalkSpeed,
+		Character.PrimaryPart.CustomPhysicalProperties
+	}
+	
+	local PhysProperties=PhysicalProperties.new(100,.5,1)
+	
+	editing_lock[Exploiter]={
+		Lock_property(Character.Humanoid,"WalkSpeed",setting.speed.value),
+		Lock_property(Character.PrimaryPart,"Anchored",false),
+		setting.slip.value and Lock_property(Character.PrimaryPart,"CustomPhysicalProperties",PhysProperties) or nil,
+	}
+end
+
+function Speedhack_disable(setting,storage)
+	local editing_lock=storage.editing_lock
+	local default_settings=storage.default_settings
+	
+	storage.state=false
+	
+	for _,connection:RBXScriptConnection in editing_lock[Exploiter] do
+		connection:Disconnect()
+	end
+	table.clear(editing_lock[Exploiter])
+	
+	if not Exploiter.Character or not Exploiter.Character.PrimaryPart or not Exploiter.Character:FindFirstChild("Humanoid") then return end
+	
+	local Character:Model=Exploiter.Character
+	
+	Character.Humanoid.WalkSpeed=default_settings[Exploiter][1]==0 and 16 or default_settings[Exploiter][1]
+	Character.PrimaryPart.CustomPhysicalProperties=default_settings[Exploiter][2]
+end
+
+function Speedhack_update(setting,storage)
+	local editing_lock=storage.editing_lock
+	local default_settings=storage.default_settings
+
+	if not Exploiter.Character or not Exploiter.Character.PrimaryPart or not Exploiter.Character:FindFirstChild("Humanoid") then return end
+
+	local Character:Model=Exploiter.Character
+	
+	if not editing_lock or not storage.state then return end
+	for _,connection:RBXScriptConnection in editing_lock[Exploiter] do
+		connection:Disconnect()
+	end
+	table.clear(editing_lock[Exploiter])
+	
+	local PhysProperties=PhysicalProperties.new(100,.5,1)
+	
+	editing_lock[Exploiter]={
+		Lock_property(Character.Humanoid,"WalkSpeed",setting.speed.value),
+		Lock_property(Character.PrimaryPart,"Anchored",false),
+		setting.slip.value and Lock_property(Character.PrimaryPart,"CustomPhysicalProperties",PhysProperties) or nil,
+	}
+	
+	Character.Humanoid.WalkSpeed=default_settings[Exploiter][1]==0 and 16 or default_settings[Exploiter][1]
+	Character.PrimaryPart.CustomPhysicalProperties=default_settings[Exploiter][2]
+end
+
+function Teleport_enable(setting,storage)
+	local Target_to_TP:Player
+	
+	if not Exploiter.Character or not Exploiter.Character.PrimaryPart then return end
+	
+	for _,Player:Player in Players:GetPlayers() do
+		local name=Player.Name:lower()
+		if name:match(setting.Player_name.value) then
+			Target_to_TP=Player
+			break
+		end
+	end
+	
+	if not Target_to_TP then return end
+	
+	if not Target_to_TP.Character or not Target_to_TP.Character.PrimaryPart then return end
+	
+	Exploiter.Character:PivotTo(Target_to_TP.Character.PrimaryPart.CFrame*CFrame.new(0,0,5))
+end
+
+function Teleport_disable(setting,storage)
+	return
+end
+
+function Teleport_update(setting,storage)
+	return
+end
+
 
 local c_gui=gui.new("regedit")
 local rage_category=c_gui:add_category("Rage","rbxassetid://12614416478")
@@ -623,6 +722,8 @@ local experimental_category=c_gui:add_category("Experimental","rbxassetid://1394
 
 esp_gui=c_gui.esp
 regedit=c_gui.gui
+
+--	RAGE
 
 rage_category:add_func("Aimbot","left",Aimbot_enable,Aimbot_disable,Aimbot_update,{
 	["fov"]={
@@ -693,6 +794,8 @@ rage_category:add_func("FOV TP","left",FOVTP_enable,FOVTP_disable,FOVTP_update,{
 	},
 },"execute")
 
+-- VISUALS
+
 visuals_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
 	["team_check"]={
 		["name"]="Team check",
@@ -721,6 +824,31 @@ visuals_category:add_func("ESP","left",ESP_enable,ESP_disable,ESP_update,{
 	}
 },"switch")
 
+-- WORLD
+
+world_category:add_func("Speed changer","left",Speedhack_enable,Speedhack_disable,Speedhack_update,{
+	["speed"]={
+		["name"]="Speed",
+		["value"]=20,
+		["type"]="number"
+	},
+	["slip"]={
+		["name"]="Disable slipping",
+		["value"]=true,
+		["type"]="switch"
+	}
+},"switch")
+
+world_category:add_func("Teleport to player","left",Teleport_enable,Teleport_disable,Teleport_update,{
+	["Player_name"]={
+		["name"]="Player name",
+		["value"]="val",
+		["type"]="string"
+	}
+},"execute")
+
+--	EXPERIMENTAL
+
 experimental_category:add_func("Ragebot (May not work)","left",Ragebot_enable,Ragebot_disable,Ragebot_update,{
 	["team_check"]={
 		["name"]="Team check",
@@ -741,5 +869,5 @@ Exploiter.OnTeleport:Connect(function()
 	end
 end)
 
-task.wait(2)
+task.wait(1)
 c_gui:ShowMenu()
